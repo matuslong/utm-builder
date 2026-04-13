@@ -259,6 +259,22 @@
       color: var(--zg-dark); min-height: 22px; margin-top: 8px;
     }
 
+    /* ══════════════════ CMS INFO ════════════════════════════ */
+    .cms-info {
+      background: var(--info-bg); border: 1.5px solid var(--info-bdr);
+      border-radius: var(--r); padding: 16px 20px;
+      margin-bottom: 10px; font-size: 13px;
+    }
+    .cms-info-title { font-weight: 700; font-size: 14px; color: var(--info-txt); margin-bottom: 8px; }
+    .cms-info p { color: var(--info-txt); line-height: 1.55; margin-bottom: 6px; }
+    .cms-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; font-weight: 600; color: var(--zc-dark);
+      text-decoration: none; padding: 6px 0;
+    }
+    .cms-link:hover { text-decoration: underline; }
+    .cms-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
     /* ══════════════════ TOAST ═══════════════════════════════ */
     .toast {
       background: var(--warn-bg); border: 1px solid var(--warn-bdr);
@@ -298,6 +314,7 @@
       gap: 6px 12px; align-items: start; font-size: 13px;
     }
     .cl-entry:last-child { border-bottom: none; }
+    .cl-main { min-width: 0; }
     .cl-date { color: var(--muted); font-size: 11px; padding-top: 3px; }
     .cl-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
     .cl-tag {
@@ -329,6 +346,16 @@
     .cl-empty {
       padding: 28px; text-align: center;
       color: var(--muted); font-size: 13px;
+    }
+
+    @media (max-width: 520px) {
+      .cl-entry {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+      }
+      .cl-date { grid-column: 1; grid-row: 1; padding-top: 0; }
+      .cl-actions { grid-column: 2; grid-row: 1; flex-direction: row; align-items: flex-start; }
+      .cl-main { grid-column: 1 / -1; grid-row: 2; }
     }
 
     /* ══════════════════ FOOTER ══════════════════════════════ */
@@ -426,8 +453,10 @@
       <span class="tip-wrap">
         <button class="tip-btn" type="button" style="border-color:#fcd34d;color:#b45309" aria-label="Nápověda k FIDL">?</button>
         <div class="tip-box">
-          Interní Zoner parametr pro propojení offline aktivit (napr. z aplikace) s daty v CRM. Přidává se na konec URL za UTM parametry jako <code style="color:#a3e635">&amp;fidl=HODNOTA</code>.
-          <div class="tip-ex">fidl=a1b2c3</div>
+          Interní Zoner parametr pro propojení offline aktivit s CRM daty.
+          Přidává se za UTM parametry jako &amp;fidl=HODNOTA.
+          Formát: YYYY-MM-kanál-jazyk-podrobnosti
+          <div class="tip-ex">fidl=2026-04-social-sk-instagram-rvw-sk</div>
         </div>
       </span>
     </div>
@@ -435,8 +464,8 @@
       <div class="label-row">
         <label class="field-label" for="fidl-val">Hodnota FIDL</label>
       </div>
-      <input type="text" id="fidl-val" placeholder="napr. a1b2c3 (volitelné)">
-      <p class="field-helper">Přidá se na konec URL jako &amp;fidl=HODNOTA &ndash; vizuálně odlišeno od UTM parametrů</p>
+      <input type="text" id="fidl-val" placeholder="napr. 2026-04-cpc-en-meta-rvw-sk">
+      <p class="field-helper">Formát: YYYY-MM-kanál-jazyk-podrobnosti &nbsp;&middot;&nbsp; Přidá se za UTM parametry jako &amp;fidl=HODNOTA</p>
     </div>
   </div>
 
@@ -456,6 +485,19 @@
 
     <button class="btn-copy" id="btn-copy" disabled>&#128203; Kopírovat URL</button>
     <div class="copy-msg" id="copy-msg"></div>
+  </div>
+
+  <!-- ════════ CMS INFO ═════════════════════════════════════════ -->
+  <div class="cms-info" id="cms-info" style="display:none">
+    <div class="cms-info-title">&#128279; URL je příliš dlouhá nebo nečitelná?</div>
+    <p>
+      Vytvořte přesměrování z krátké, čitelné adresy na tuto URL.
+      <strong>UTM parametry se neztratí</strong> – jsou součástí cílové URL, na kterou přesměrování míří.
+    </p>
+    <a href="https://cms.zoner.com/outbound_links.aspx" target="_blank" rel="noopener" class="cms-link">
+      &#8594; Vytvořit přesměrování v CMS &nbsp;(cms.zoner.com)
+    </a>
+    <p class="cms-note">&#128274; Nemáte přístup do CMS? Požádejte jiného člena týmu o vytvoření přesměrování.</p>
   </div>
 
   <!-- ════════ CHANGELOG ══════════════════════════════════════ -->
@@ -538,6 +580,30 @@ const RULES = {
     desc:  'Magazíny a Nápověda Zoner Studio',
     src:   { type: 'select', opts: ['magaziny','napoveda'] },
     camp:  { type: 'required', ph: 'slug nebo název sekce (napr. faq-platby)', lbl: 'Slug / Sekce *' },
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// TIPS – kontextové nápovědy k polím podle zvoleného media
+// ═══════════════════════════════════════════════════════════════════
+
+const TIPS = {
+  src: {
+    application:       { text: 'Zdroj je pevně nastaven na ZPS pro tento kanál.', ex: 'utm_source=ZPS' },
+    cpc:               { text: 'Vyberte reklamnou platformu ze seznamu.', ex: 'utm_source=google nebo facebook' },
+    social:            { text: 'Vyberte sociální síť, na které příspěvek publikujete.', ex: 'utm_source=instagram nebo linkedin' },
+    affiliate:         { text: 'Jméno partnera nebo doména webu (bez www a přípony).', ex: 'utm_source=jan_novak nebo fotografujeme_cz' },
+    sponsored_content: { text: 'Doména webu, kde byl sponzorovaný článek publikován.', ex: 'utm_source=lupa_cz nebo fotografovani_cz' },
+    referral:          { text: 'Doména webu, kde se organická zmínka nebo recenze nachází.', ex: 'utm_source=fotografujeme_cz' },
+    owned_media:       { text: 'Vyberte vlastní platformu – magazíny nebo nápověda.', ex: 'utm_source=magaziny nebo napoveda' },
+  },
+  camp: {
+    application:       { text: 'Název kampaně nebo série zpráv v aplikaci.', ex: 'utm_campaign=2026-04-02_ZPS' },
+    social:            { text: 'Název kampaně nebo tematická série příspěvků. Volitelné.', ex: 'utm_campaign=spring_promo_2026' },
+    affiliate:         { text: 'Název konkrétní akce s partnerem. Vyplňte jen při specifické kampani.', ex: 'utm_campaign=black_friday_2026' },
+    sponsored_content: { text: 'Název konkrétní akce. Vyplňte jen při specifické kampani, jinak nechte prázdné.', ex: 'utm_campaign=black_friday' },
+    referral:          { text: 'Název akce nebo typ zmínky. Volitelné.', ex: 'utm_campaign=recenze_2026' },
+    owned_media:       { text: 'Slug nebo název sekce. Povinné – identifikuje konkrétní stránku.', ex: 'utm_campaign=faq-platby nebo magazin-tipy-portret' },
   },
 };
 
@@ -683,8 +749,9 @@ function renderDynamic(medium) {
   // ── SOURCE ─────────────────────────────────────────────────────
   html += '<div class="field">';
   const srcLabel = (r.src.type === 'memory') ? r.src.lbl : 'utm_source *';
+  const st = TIPS.src[medium] || { text: 'Konkrétní platforma nebo partner v rámci kanálu.', ex: 'utm_source=instagram nebo lupa_cz' };
   html += `<div class="label-row"><label class="field-label" for="utm-source">${esc(srcLabel)}</label>
-           ${tipHtml('Konkrétní platforma nebo partner v rámci kanálu.','utm_source=instagram nebo lupa_cz')}
+           ${tipHtml(st.text, st.ex)}
            </div>`;
 
   if (r.src.type === 'fixed') {
@@ -726,9 +793,10 @@ function renderDynamic(medium) {
       <p class="field-helper">Marketingová zpráva → campaign povinná &nbsp;|&nbsp; Standardní odkaz (nápověda atd.) → campaign se vynechá</p>
     </div>`;
     if (appLinkType === 'marketing') {
+      const ct = TIPS.camp[medium] || { text: 'Název kampaně nebo série. Identifikuje konkrétní akci v GA4.', ex: 'utm_campaign=spring_promo_2026' };
       html += `<div class="field">
         <div class="label-row"><label class="field-label" for="utm-campaign">utm_campaign *</label>
-        ${tipHtml('Název kampaně nebo série. Identifikuje konkrétní akci v GA4.','utm_campaign=2026-04-02_ZPS')}</div>
+        ${tipHtml(ct.text, ct.ex)}</div>
         <input type="text" id="utm-campaign" placeholder="napr. 2026-04-02_ZPS">
       </div>`;
     }
@@ -744,10 +812,11 @@ function renderDynamic(medium) {
   // ── OPTIONAL ───────────────────────────────────────────────────
   } else if (r.camp.type === 'optional') {
     const sugg = r.camp.sugg || [];
+    const ct = TIPS.camp[medium] || { text: 'Název kampaně nebo série. Volitelné, ale doporučené pro přesnější reporty.', ex: 'utm_campaign=spring_promo_2026' };
     html += `<div class="field">
       <div class="label-row">
         <label class="field-label" for="utm-campaign">utm_campaign ${skOptLabel()}</label>
-        ${tipHtml('Název kampaně nebo série. Volitelné, ale doporučené pro přesnější reporty.','utm_campaign=spring_promo_2026')}
+        ${tipHtml(ct.text, ct.ex)}
       </div>
       <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph||'')}"${sugg.length?' list="camp-dl"':''}>
       ${sugg.length?`<datalist id="camp-dl">${sugg.map(s=>`<option value="${esc(s)}">`).join('')}</datalist>`:''}
@@ -755,10 +824,11 @@ function renderDynamic(medium) {
 
   // ── REQUIRED ───────────────────────────────────────────────────
   } else if (r.camp.type === 'required') {
+    const ct = TIPS.camp[medium] || { text: 'Slug nebo název sekce obsahu. Povinné – identifikuje konkrétní stránku nebo sekci.', ex: 'utm_campaign=faq-platby nebo magazin-tipy-portret' };
     html += `<div class="field">
       <div class="label-row">
         <label class="field-label" for="utm-campaign">${esc(r.camp.lbl||'utm_campaign *')}</label>
-        ${tipHtml('Slug nebo název sekce obsahu. Povinné pro vlastní platformy – identifikuje konkrétní stránku nebo sekci.','utm_campaign=faq-platby nebo magazin-tipy-portret')}
+        ${tipHtml(ct.text, ct.ex)}
       </div>
       <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph||'')}">
     </div>`;
@@ -839,7 +909,10 @@ function updateURL() {
   if (!result) {
     box.textContent = 'Vyplňte povinná pole...'; box.className = 'url-box ph';
     ptable.style.display = 'none'; ptable.innerHTML = '';
-    btn.disabled = true; return;
+    btn.disabled = true;
+    const cmsInfo = document.getElementById('cms-info');
+    if (cmsInfo) cmsInfo.style.display = 'none';
+    return;
   }
 
   box.textContent = result.url; box.className = 'url-box';
@@ -853,6 +926,9 @@ function updateURL() {
   ptable.innerHTML = rows.join('');
   ptable.style.display = 'block';
   btn.disabled = false;
+
+  const cmsInfo = document.getElementById('cms-info');
+  if (cmsInfo) cmsInfo.style.display = 'block';
 }
 
 // ═══════════════════════════════════════════════════════════════════
