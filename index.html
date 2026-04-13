@@ -8,70 +8,91 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green:        #2c7a3a;
-      --green-dark:   #1e5728;
-      --green-bg:     #f0f9f1;
-      --green-border: #a8d5b0;
-      --text:         #1a1a1a;
-      --muted:        #6b7280;
-      --border:       #e2e8f0;
-      --bg:           #f8fafc;
-      --card:         #ffffff;
-      --info-bg:      #eff6ff;
-      --info-border:  #bfdbfe;
-      --info-text:    #1d4ed8;
-      --warn-bg:      #fffbeb;
-      --warn-border:  #fcd34d;
-      --warn-text:    #92400e;
-      --error:        #dc2626;
-      --r:            10px;
-      --rs:            6px;
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / .10), 0 1px 2px -1px rgb(0 0 0 / .10);
+      /* ── Zoner Studio brand ── */
+      --zg:       #80C341;   /* Studio green – primary */
+      --zg-dark:  #6AA744;   /* hover / dark variant */
+      --zg-bg:    #f4faec;   /* light green bg */
+      --zg-bdr:   #c5e49a;   /* green border */
+      --zc:       #00BFE8;   /* Zoner cyan */
+      --zc-dark:  #3099BF;
+
+      /* ── UI neutrals ── */
+      --text:   #1a1a1a;
+      --muted:  #6b7280;
+      --border: #e2e8f0;
+      --bg:     #f1f5f9;
+      --card:   #ffffff;
+
+      /* ── Info (cyan) ── */
+      --info-bg:  #e0f7fd;
+      --info-bdr: #80deea;
+      --info-txt: #00606e;
+
+      /* ── Toast / warning ── */
+      --warn-bg:  #fffbeb;
+      --warn-bdr: #fcd34d;
+      --warn-txt: #92400e;
+
+      /* ── FIDL (amber) ── */
+      --fidl-bg:  #fffbeb;
+      --fidl-bdr: #f59e0b;
+      --fidl-dk:  #b45309;
+
+      --error: #dc2626;
+      --r: 10px;  --rs: 6px;
+      --shadow: 0 1px 3px 0 rgb(0 0 0/.10), 0 1px 2px -1px rgb(0 0 0/.10);
     }
 
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.6;
-      padding: 32px 16px 64px;
+      font-family: system-ui,-apple-system,'Segoe UI',sans-serif;
+      background: var(--bg); color: var(--text);
+      font-size: 15px; line-height: 1.6;
+      padding: 24px 16px 64px;
     }
 
-    .wrap { max-width: 620px; margin: 0 auto; }
+    .wrap { max-width: 640px; margin: 0 auto; }
 
-    /* ── Header ── */
-    .header { text-align: center; margin-bottom: 28px; }
-    .header h1 { font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: -.3px; }
-    .header p  { color: var(--muted); font-size: 13px; margin-top: 3px; }
-
-    /* ── Card ── */
-    .card {
-      background: var(--card);
-      border-radius: var(--r);
+    /* ══════════════════ HEADER ══════════════════════════════ */
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 20px;
+      padding: 14px 20px;
+      background: var(--card); border-radius: var(--r);
       box-shadow: var(--shadow);
-      padding: 24px;
-      margin-bottom: 14px;
+    }
+    .logo-link { display: block; text-decoration: none; flex-shrink: 0; }
+    .logo-link svg { height: 34px; width: auto; display: block; }
+    .hdr-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .hdr-title { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+    .docs-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; color: var(--zc-dark); text-decoration: none;
+      border: 1px solid var(--zc-dark); border-radius: 20px;
+      padding: 3px 10px; transition: background .15s, color .15s;
+    }
+    .docs-link:hover { background: var(--info-bg); color: var(--info-txt); }
+
+    /* ══════════════════ CARD ════════════════════════════════ */
+    .card {
+      background: var(--card); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 24px; margin-bottom: 10px;
     }
 
-    /* ── Field ── */
-    .field + .field { margin-top: 18px; }
+    /* ══════════════════ FIELD ═══════════════════════════════ */
+    .field + .field { margin-top: 16px; }
+    .label-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
     .field-label {
-      display: block; font-size: 12px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .6px;
-      color: var(--muted); margin-bottom: 6px;
+      font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--muted); line-height: 1;
     }
     .field-helper { font-size: 12px; color: var(--muted); margin-top: 5px; }
 
-    /* ── Inputs ── */
+    /* ══════════════════ INPUTS ══════════════════════════════ */
     input[type="text"], select {
-      display: block; width: 100%;
-      padding: 9px 12px;
-      border: 1.5px solid var(--border);
-      border-radius: var(--rs);
+      display: block; width: 100%; padding: 9px 12px;
+      border: 1.5px solid var(--border); border-radius: var(--rs);
       font-size: 14px; font-family: inherit; color: var(--text);
-      background: #fff;
-      outline: none;
+      background: #fff; outline: none;
       transition: border-color .15s, box-shadow .15s;
       -webkit-appearance: none; appearance: none;
     }
@@ -81,89 +102,133 @@
       padding-right: 36px; cursor: pointer;
     }
     input:focus, select:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(44,122,58,.15);
+      border-color: var(--zg);
+      box-shadow: 0 0 0 3px rgba(128,195,65,.18);
     }
     input:disabled, select:disabled {
-      background: #f8fafc; color: var(--muted); cursor: not-allowed;
-      border-color: var(--border);
+      background: #f0f2f5; color: #b0b8c4;
+      cursor: not-allowed; border-color: #e2e8f0;
     }
 
-    /* ── Divider ── */
+    /* ══════════════════ TOOLTIP ═════════════════════════════ */
+    .tip-wrap { position: relative; display: inline-flex; }
+    .tip-btn {
+      width: 17px; height: 17px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: #fff;
+      color: var(--muted); font-size: 10px; font-weight: 700;
+      line-height: 1; cursor: help; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0; transition: border-color .15s, color .15s;
+    }
+    .tip-btn:hover, .tip-btn:focus {
+      border-color: var(--zg); color: var(--zg-dark); outline: none;
+    }
+    .tip-box {
+      display: none; position: absolute;
+      bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      width: 270px; background: #1c1c1e; color: #f5f5f7;
+      font-size: 12px; line-height: 1.55; padding: 10px 13px;
+      border-radius: 8px; z-index: 200; pointer-events: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,.30);
+      white-space: normal; font-weight: 400; text-transform: none; letter-spacing: 0;
+    }
+    .tip-box::after {
+      content: ''; position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: #1c1c1e;
+    }
+    .tip-ex {
+      margin-top: 7px; padding-top: 7px;
+      border-top: 1px solid rgba(255,255,255,.15);
+      font-family: 'Courier New',monospace; color: #a3e635; font-size: 11px;
+    }
+    .tip-btn:hover + .tip-box,
+    .tip-btn:focus + .tip-box { display: block; }
+
+    /* ══════════════════ DIVIDER ═════════════════════════════ */
     .divider {
       display: flex; align-items: center; gap: 10px;
-      margin: 22px 0 14px;
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+      margin: 20px 0 14px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .8px; color: var(--muted);
     }
     .divider::before, .divider::after {
       content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
-    /* ── Toggle ── */
+    /* ══════════════════ TOGGLE ══════════════════════════════ */
     .toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
     .toggle-opt { flex: 1; min-width: 150px; }
     .toggle-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
     .toggle-opt label {
       display: flex; align-items: center; justify-content: center;
-      padding: 9px 14px;
-      border: 1.5px solid var(--border); border-radius: var(--rs);
+      padding: 9px 14px; border: 1.5px solid var(--border); border-radius: var(--rs);
       cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted);
       background: #fff; transition: all .15s; text-align: center;
     }
     .toggle-opt input[type="radio"]:checked + label {
-      border-color: var(--green); background: var(--green-bg);
-      color: var(--green); font-weight: 700;
+      border-color: var(--zg); background: var(--zg-bg);
+      color: var(--zg-dark); font-weight: 700;
     }
-    .toggle-opt label:hover { border-color: var(--green); }
+    .toggle-opt label:hover { border-color: var(--zg); }
 
-    /* ── Banners ── */
-    .banner { padding: 10px 14px; border-radius: var(--rs); font-size: 13px; margin-top: 8px; line-height: 1.5; }
-    .banner-info { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text); }
-    .banner-warn { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-text); }
+    /* ══════════════════ BANNERS ═════════════════════════════ */
+    .banner { padding: 10px 14px; border-radius: var(--rs); font-size: 13px; margin-top: 8px; }
+    .banner-info { background: var(--info-bg); border: 1px solid var(--info-bdr); color: var(--info-txt); }
 
-    /* ── Saved chips ── */
+    /* ══════════════════ CHIPS ═══════════════════════════════ */
     .saved-section { margin-top: 8px; }
     .saved-lbl { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
     .saved-list { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip {
       display: inline-flex; align-items: center; gap: 2px;
-      background: var(--green-bg); border: 1px solid var(--green-border);
+      background: var(--zg-bg); border: 1px solid var(--zg-bdr);
       border-radius: 20px; padding: 3px 6px 3px 10px;
-      font-size: 12px; color: var(--green); cursor: pointer;
-      transition: background .1s;
+      font-size: 12px; color: var(--zg-dark); cursor: pointer; transition: background .1s;
     }
-    .chip:hover { background: #d4eeda; }
+    .chip:hover { background: #d8f0b0; }
     .chip-del {
-      background: none; border: none; color: #9ca3af;
-      font-size: 15px; line-height: 1; cursor: pointer;
-      padding: 0 3px; border-radius: 50%;
-      transition: color .1s, background .1s;
+      background: none; border: none; color: #9ca3af; font-size: 15px;
+      line-height: 1; cursor: pointer; padding: 0 3px; border-radius: 50%;
+      transition: color .1s;
     }
-    .chip-del:hover { color: var(--error); background: rgba(220,38,38,.1); }
+    .chip-del:hover { color: var(--error); }
 
-    /* ── Output card ── */
-    .out-card {
-      background: var(--green-bg);
-      border: 1.5px solid var(--green-border);
-      border-radius: var(--r);
-      padding: 20px 24px;
-      margin-bottom: 14px;
+    /* ══════════════════ FIDL CARD ═══════════════════════════ */
+    .fidl-card {
+      border: 2px solid var(--fidl-bdr); background: var(--fidl-bg);
+      border-radius: var(--r); padding: 18px 24px; margin-bottom: 10px;
     }
-    .out-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--green); margin-bottom: 10px; }
+    .fidl-hdr {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+      font-size: 13px; color: var(--fidl-dk); font-weight: 600;
+    }
+    .fidl-badge {
+      background: var(--fidl-bdr); color: #fff;
+      font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      padding: 2px 8px; border-radius: 4px;
+    }
+
+    /* ══════════════════ OUTPUT CARD ═════════════════════════ */
+    .out-card {
+      background: var(--zg-bg); border: 1.5px solid var(--zg-bdr);
+      border-radius: var(--r); padding: 20px 24px; margin-bottom: 10px;
+    }
+    .out-title {
+      font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--zg-dark); margin-bottom: 10px;
+    }
     .url-box {
-      background: #fff; border: 1.5px solid var(--green-border);
+      background: #fff; border: 1.5px solid var(--zg-bdr);
       border-radius: var(--rs); padding: 12px 14px;
-      font-family: 'Courier New','SF Mono','Consolas',monospace;
-      font-size: 12.5px; word-break: break-all;
-      color: var(--text); min-height: 46px; line-height: 1.6;
+      font-family: 'Courier New',monospace; font-size: 12.5px;
+      word-break: break-all; color: var(--text); min-height: 46px; line-height: 1.6;
     }
     .url-box.ph { color: var(--muted); font-family: inherit; font-size: 14px; font-style: italic; }
 
-    /* ── Params table ── */
-    .params-table {
-      margin-top: 12px;
-      border: 1px solid var(--green-border);
+    /* ══════════════════ PARAMS TABLE ════════════════════════ */
+    .ptable {
+      margin-top: 12px; border: 1px solid var(--zg-bdr);
       border-radius: var(--rs); overflow: hidden; background: #fff;
     }
     .pr { display: flex; border-bottom: 1px solid #e8f5ea; font-size: 13px; }
@@ -171,54 +236,171 @@
     .pr-k {
       width: 152px; flex-shrink: 0; padding: 7px 12px;
       font-family: 'Courier New',monospace; font-size: 12px; font-weight: 600;
-      color: var(--green); background: #f7fdf8; border-right: 1px solid #e8f5ea;
+      color: var(--zg-dark); background: #f6fdf0; border-right: 1px solid #e8f5ea;
     }
     .pr-v { padding: 7px 12px; font-family: 'Courier New',monospace; font-size: 12px; word-break: break-all; }
+    .pr.pr-fidl .pr-k { color: var(--fidl-dk); background: #fffef5; }
+    .pr.pr-fidl { border-bottom-color: #fde68a; }
 
-    /* ── Copy button ── */
+    /* ══════════════════ NOTE + COPY ═════════════════════════ */
+    .note-row { margin-top: 14px; }
     .btn-copy {
       display: block; width: 100%; margin-top: 14px;
-      padding: 11px 20px; background: var(--green); color: #fff;
+      padding: 12px 20px; background: var(--zg); color: #fff;
       border: none; border-radius: var(--rs);
       font-size: 14px; font-weight: 700; font-family: inherit;
       cursor: pointer; transition: background .15s, transform .1s;
     }
-    .btn-copy:hover:not(:disabled) { background: var(--green-dark); }
+    .btn-copy:hover:not(:disabled) { background: var(--zg-dark); }
     .btn-copy:active:not(:disabled) { transform: scale(.98); }
     .btn-copy:disabled { background: #d1d5db; cursor: not-allowed; }
-    .copy-msg { text-align: center; font-size: 13px; font-weight: 600; color: var(--green); min-height: 22px; margin-top: 8px; }
-
-    /* ── Toast ── */
-    .toast {
-      background: var(--warn-bg); border: 1px solid var(--warn-border);
-      border-radius: var(--rs); padding: 10px 16px;
-      font-size: 13px; color: var(--warn-text); margin-bottom: 14px;
+    .copy-msg {
+      text-align: center; font-size: 13px; font-weight: 600;
+      color: var(--zg-dark); min-height: 22px; margin-top: 8px;
     }
 
-    footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 24px; }
+    /* ══════════════════ TOAST ═══════════════════════════════ */
+    .toast {
+      background: var(--warn-bg); border: 1px solid var(--warn-bdr);
+      border-radius: var(--rs); padding: 10px 16px;
+      font-size: 13px; color: var(--warn-txt); margin-bottom: 10px;
+    }
+
+    /* ══════════════════ CHANGELOG ═══════════════════════════ */
+    .changelog {
+      background: var(--card); border-radius: var(--r);
+      box-shadow: var(--shadow); overflow: hidden; margin-bottom: 10px;
+    }
+    .cl-head {
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .cl-title-row {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 8px;
+    }
+    .cl-title { font-size: 14px; font-weight: 700; }
+    .cl-count { font-size: 12px; color: var(--muted); font-weight: 400; }
+    .btn-cl-clear {
+      font-size: 12px; color: var(--error); background: none;
+      border: 1px solid #fca5a5; border-radius: 4px; padding: 3px 10px;
+      cursor: pointer; transition: background .1s;
+    }
+    .btn-cl-clear:hover { background: #fee2e2; }
+    .cl-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cl-filters select, .cl-filters input {
+      flex: 1; min-width: 130px; font-size: 13px; padding: 7px 10px;
+    }
+    .cl-body { padding: 0; }
+    .cl-entry {
+      padding: 11px 20px; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: 80px 1fr auto;
+      gap: 6px 12px; align-items: start; font-size: 13px;
+    }
+    .cl-entry:last-child { border-bottom: none; }
+    .cl-date { color: var(--muted); font-size: 11px; padding-top: 3px; }
+    .cl-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+    .cl-tag {
+      padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      background: var(--zg-bg); color: var(--zg-dark); border: 1px solid var(--zg-bdr);
+    }
+    .cl-tag.t-fidl {
+      background: #fffbeb; color: var(--fidl-dk); border-color: #fde68a;
+    }
+    .cl-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .cl-url {
+      font-family: 'Courier New',monospace; font-size: 11px; color: #9ca3af;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 100%; margin-top: 3px;
+    }
+    .cl-actions { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+    .cl-copy-btn {
+      background: none; border: 1px solid var(--border); border-radius: 4px;
+      padding: 3px 8px; font-size: 11px; cursor: pointer; color: var(--muted);
+      white-space: nowrap; transition: border-color .1s, color .1s;
+    }
+    .cl-copy-btn:hover { border-color: var(--zg); color: var(--zg-dark); }
+    .cl-del-btn {
+      background: none; border: none; color: #d1d5db;
+      font-size: 16px; cursor: pointer; line-height: 1;
+      padding: 2px 4px; transition: color .1s;
+    }
+    .cl-del-btn:hover { color: var(--error); }
+    .cl-empty {
+      padding: 28px; text-align: center;
+      color: var(--muted); font-size: 13px;
+    }
+
+    /* ══════════════════ FOOTER ══════════════════════════════ */
+    footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; }
+    footer a { color: var(--zc-dark); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="header">
-    <h1>UTM Builder</h1>
-    <p>Zoner Studio &middot; Marketingový tým</p>
-  </div>
+  <!-- ════════ HEADER ════════════════════════════════════════ -->
+  <header class="site-header">
+    <a href="https://www.zoner.cz/" target="_blank" rel="noopener" class="logo-link" aria-label="Zoner Studio">
+      <svg height="34" viewBox="0 0 9375 4051" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1025.6 1478.62L1938.64 404.444V380.142H1025.6V57.8604H2424.66V380.142L1513.94 1454.32V1478.62H2424.66V1800.9H1025.6V1478.62Z" fill="#1a1a1a"/>
+        <path d="M2509.43 1171.09C2509.43 721.808 2799.88 507.146 3197.96 507.146C3596.04 507.146 3886.5 722.098 3886.5 1171.09C3886.5 1620.09 3600.96 1835.04 3197.96 1835.04C2794.97 1835.04 2509.43 1620.09 2509.43 1171.09ZM3539.63 1171.09C3539.63 902.622 3400.47 775.618 3195.36 775.618C2990.24 775.618 2856.01 902.622 2856.01 1171.09C2856.01 1439.57 2992.85 1566.57 3200.28 1566.57C3407.71 1566.57 3539.63 1437.25 3539.63 1171.09Z" fill="#1a1a1a"/>
+        <path d="M4683.82 507.146C5081.61 507.146 5323.46 680.438 5323.46 1095.59V1801.19H4986.72V1095.59C4986.72 897.704 4881.7 795.291 4684.11 795.291C4486.51 795.291 4383.81 900.307 4383.81 1100.5V1801.19H4044.46V1100.5C4044.46 685.356 4288.63 507.146 4684.11 507.146H4683.82Z" fill="#1a1a1a"/>
+        <path d="M5481.42 1171.09C5481.42 726.726 5762.04 507.146 6157.81 507.146C6553.57 507.146 6785.3 744.084 6785.3 1136.96C6785.3 1176.01 6782.99 1219.99 6778.07 1261.36H5818.46C5840.44 1471.39 5974.68 1583.64 6155.49 1583.64C6265.43 1583.64 6362.92 1537.35 6414.42 1454.32H6743.93C6670.74 1683.74 6458.39 1835.04 6158.1 1835.04C5742.95 1835.04 5481.71 1598.1 5481.71 1171.09H5481.42ZM6140.45 758.55C5991.46 758.55 5857.22 856.333 5825.4 1034.54H6447.98C6421.07 849.101 6289.44 758.55 6140.45 758.55Z" fill="#1a1a1a"/>
+        <path d="M6950.49 541.284H7265.54L7289.84 734.248H7314.15C7402.09 607.244 7521.58 541.284 7751.28 541.284V853.729C7719.46 848.811 7687.92 848.811 7658.42 848.811C7414.24 848.811 7289.84 975.815 7289.84 1241.97V1800.9H6950.49V541.284Z" fill="#1a1a1a"/>
+        <path d="M702.738 57.8604H362.52V380.142H702.738V57.8604Z" fill="#3099BF"/>
+        <path d="M58.7539 57.8604V380.142V702.424H381.036V380.142V57.8604H58.7539Z" fill="#00BFE8"/>
+        <path d="M988.86 3431.7V3382.8H1345.28V3414.63C1345.28 3578.08 1479.52 3666.03 1711.54 3666.03C1943.55 3666.03 2063.04 3592.84 2063.04 3458.6C2063.04 3112.02 998.696 3363.42 998.696 2691.95C998.696 2364.75 1274.4 2159.64 1694.47 2159.64C2190.04 2159.64 2409.62 2376.9 2409.62 2699.18C2409.62 2716.25 2409.62 2733.32 2407.31 2748.08H2050.89C2053.2 2735.93 2053.2 2726.09 2053.2 2713.94C2053.2 2569.87 1960.33 2464.85 1708.93 2464.85C1491.67 2464.85 1374.5 2533.13 1374.5 2667.36C1374.5 3021.47 2438.84 2774.69 2438.84 3438.93C2438.84 3751.37 2172.68 3971.24 1728.31 3971.24C1147.4 3971.24 988.57 3688.02 988.57 3431.7H988.86Z" fill="#1a1a1a"/>
+        <path d="M2792.08 2965.34H2513.77V2677.2H2792.08V2340.16H3129.11V2677.2H3451.39V2965.34H3129.11V3937.11H2792.08V2965.34Z" fill="#1a1a1a"/>
+        <path d="M3562.48 3382.8V2677.2H3901.83V3382.8C3901.83 3580.69 4004.25 3683.1 4202.13 3683.1C4400.01 3683.1 4504.74 3575.77 4504.74 3375.57V2677.49H4841.78V3375.57C4841.78 3790.72 4597.61 3971.24 4202.13 3971.24C3806.65 3971.24 3562.48 3797.95 3562.48 3382.8Z" fill="#1a1a1a"/>
+        <path d="M4999.45 3307.3C4999.45 2862.93 5270.52 2643.35 5575.74 2643.35C5768.7 2643.35 5895.71 2709.31 5990.89 2843.55H6015.19V2194.06H6351.93V3937.11H6039.49L6015.19 3768.73H5990.89C5895.71 3900.65 5771.31 3971.24 5575.74 3971.24C5270.52 3971.24 4999.45 3753.98 4999.45 3307.3ZM6022.42 3307.3C6022.42 3068.04 5883.27 2921.66 5683.07 2921.66C5482.87 2921.66 5346.32 3050.98 5346.32 3307.3C5346.32 3563.62 5487.79 3692.94 5683.07 3692.94C5878.35 3692.94 6022.42 3546.55 6022.42 3307.3Z" fill="#1a1a1a"/>
+        <path d="M6545.76 2328.3C6545.76 2213.45 6628.79 2130.42 6743.64 2130.42C6858.5 2130.42 6941.24 2213.45 6941.24 2328.3C6941.24 2443.15 6858.21 2526.18 6743.64 2526.18C6629.08 2526.18 6545.76 2443.15 6545.76 2328.3ZM6575.27 2677.49H6914.62V3937.11H6575.27V2677.49Z" fill="#1a1a1a"/>
+        <path d="M7072.87 3307.3C7072.87 2858.01 7363.33 2643.35 7761.41 2643.35C8159.48 2643.35 8449.94 2858.3 8449.94 3307.3C8449.94 3756.29 8164.4 3971.24 7761.41 3971.24C7358.41 3971.24 7072.87 3756.29 7072.87 3307.3ZM8103.07 3307.3C8103.07 3038.82 7963.92 2911.82 7758.8 2911.82C7553.69 2911.82 7419.45 3038.82 7419.45 3307.3C7419.45 3575.77 7556 3702.77 7763.72 3702.77C7971.44 3702.77 8103.07 3573.45 8103.07 3307.3Z" fill="#1a1a1a"/>
+        <path d="M8652.17 3937.1H8997.59V3614.82H8652.17V3937.1Z" fill="#6AA744"/>
+        <path d="M8974.45 3292.54V3614.82V3937.11H9296.74V3614.82V3292.54H8974.45Z" fill="#80C341"/>
+      </svg>
+    </a>
+    <div class="hdr-right">
+      <span class="hdr-title">UTM Builder</span>
+      <a href="https://docs.google.com/document/d/19PtPTzT1B_N7nizDZOSXlvD-xQzBYoAe9RCGOO-fkxc/edit?usp=sharing"
+         target="_blank" rel="noopener" class="docs-link">&#128196; Dokumentace UTM pravidel</a>
+    </div>
+  </header>
 
-  <!-- Sanitize toast -->
+  <!-- ════════ TOAST ══════════════════════════════════════════ -->
   <div class="toast" id="toast" style="display:none"></div>
 
-  <!-- Form card -->
+  <!-- ════════ FORM CARD ═════════════════════════════════════ -->
   <div class="card">
+
+    <!-- URL webu -->
     <div class="field">
-      <label class="field-label" for="base-url">URL webu *</label>
+      <div class="label-row">
+        <label class="field-label" for="base-url">URL webu *</label>
+        <span class="tip-wrap">
+          <button class="tip-btn" type="button" aria-label="Nápověda">?</button>
+          <div class="tip-box">
+            Cílová adresa produktového webu. Nikdy ne interní stránky nebo podstránky webu.
+            <div class="tip-ex">https://www.zoner.cz/koupit</div>
+          </div>
+        </span>
+      </div>
       <input type="text" id="base-url" placeholder="https://www.zoner.cz/produkty/...">
-      <p class="field-helper">Adresa produktového webu – nikdy ne interní stránky</p>
     </div>
 
+    <!-- Medium -->
     <div class="field">
-      <label class="field-label" for="medium">Medium *</label>
+      <div class="label-row">
+        <label class="field-label" for="medium">utm_medium *</label>
+        <span class="tip-wrap">
+          <button class="tip-btn" type="button" aria-label="Nápověda">?</button>
+          <div class="tip-box">
+            Typ marketingového kanálu. Musí být konzistentní pro celý kanál – GA4 podle něj přiřazuje konverze.
+            <div class="tip-ex">social &nbsp;·&nbsp; cpc &nbsp;·&nbsp; affiliate &nbsp;·&nbsp; owned_media</div>
+          </div>
+        </span>
+      </div>
       <select id="medium">
         <option value="">— Vyberte typ kanálu —</option>
         <option value="application">Aplikace Zoner Studio</option>
@@ -231,27 +413,87 @@
       </select>
     </div>
 
-    <!-- Dynamicky vykreslená pole -->
+    <!-- Dynamic fields (skeleton → real) -->
     <div id="dynamic"></div>
+
   </div>
 
-  <!-- Output card -->
+  <!-- ════════ FIDL CARD ══════════════════════════════════════ -->
+  <div class="fidl-card">
+    <div class="fidl-hdr">
+      <span class="fidl-badge">FIDL</span>
+      Interní parametr &middot; volitelný
+      <span class="tip-wrap">
+        <button class="tip-btn" type="button" style="border-color:#fcd34d;color:#b45309" aria-label="Nápověda k FIDL">?</button>
+        <div class="tip-box">
+          Interní Zoner parametr pro propojení offline aktivit (napr. z aplikace) s daty v CRM. Přidává se na konec URL za UTM parametry jako <code style="color:#a3e635">&amp;fidl=HODNOTA</code>.
+          <div class="tip-ex">fidl=a1b2c3</div>
+        </div>
+      </span>
+    </div>
+    <div class="field">
+      <div class="label-row">
+        <label class="field-label" for="fidl-val">Hodnota FIDL</label>
+      </div>
+      <input type="text" id="fidl-val" placeholder="napr. a1b2c3 (volitelné)">
+      <p class="field-helper">Přidá se na konec URL jako &amp;fidl=HODNOTA &ndash; vizuálně odlišeno od UTM parametrů</p>
+    </div>
+  </div>
+
+  <!-- ════════ OUTPUT CARD ════════════════════════════════════ -->
   <div class="out-card" id="output" style="display:none">
     <div class="out-title">Vygenerovaná URL</div>
     <div class="url-box ph" id="url-box">Vyplňte povinná pole...</div>
-    <div class="params-table" id="params-table" style="display:none"></div>
+    <div class="ptable" id="ptable" style="display:none"></div>
+
+    <div class="note-row">
+      <div class="label-row">
+        <label class="field-label" for="utm-note">Poznámka <span style="font-weight:400;text-transform:none;letter-spacing:0">(volitelné)</span></label>
+      </div>
+      <input type="text" id="utm-note" placeholder="napr. Instagram post k jarní kampani – pro snazší vyhodnocení">
+      <p class="field-helper">Poznámka se uloží do historie UTM</p>
+    </div>
+
     <button class="btn-copy" id="btn-copy" disabled>&#128203; Kopírovat URL</button>
     <div class="copy-msg" id="copy-msg"></div>
   </div>
 
-  <footer>Pravidla dle UTM dokumentace Zoner Studio &middot; 2026</footer>
+  <!-- ════════ CHANGELOG ══════════════════════════════════════ -->
+  <div class="changelog" id="changelog" style="display:none">
+    <div class="cl-head">
+      <div class="cl-title-row">
+        <span class="cl-title">Historie UTM <span class="cl-count" id="cl-count"></span></span>
+        <button class="btn-cl-clear" id="btn-cl-clear">Smazat vše</button>
+      </div>
+      <div class="cl-filters">
+        <select id="cl-medium">
+          <option value="">Všechny kanály</option>
+          <option value="application">application</option>
+          <option value="cpc">cpc</option>
+          <option value="social">social</option>
+          <option value="affiliate">affiliate</option>
+          <option value="sponsored_content">sponsored_content</option>
+          <option value="referral">referral</option>
+          <option value="owned_media">owned_media</option>
+        </select>
+        <input type="text" id="cl-search" placeholder="Hledat source, campaign, poznámku...">
+      </div>
+    </div>
+    <div class="cl-body" id="cl-body"></div>
+  </div>
+
+  <footer>
+    Pravidla UTM parametrů Zoner Studio &middot; 2026 &middot;
+    <a href="https://docs.google.com/document/d/19PtPTzT1B_N7nizDZOSXlvD-xQzBYoAe9RCGOO-fkxc/edit?usp=sharing"
+       target="_blank" rel="noopener">Dokumentace</a>
+  </footer>
 
 </div>
 <script>
 'use strict';
 
 // ═══════════════════════════════════════════════════════════════════
-// DATA – pravidla z dokumentace (upravuj zde při změnách pravidel)
+// DATA – pravidla kanálů (edituj zde při změně pravidel)
 // ═══════════════════════════════════════════════════════════════════
 
 const RULES = {
@@ -265,10 +507,7 @@ const RULES = {
     label: 'Placená reklama (CPC)',
     desc:  'Google Ads, Meta Ads, Sklik, Microsoft Ads',
     src:   { type: 'select', opts: ['google','facebook','instagram','sklik','bing'] },
-    camp:  {
-      type: 'disabled',
-      note: 'Parametry kampaně se generují automaticky reklamným systémem (Google Ads auto-tagging, Meta Pixel). Nic nastavovat není potřeba.',
-    },
+    camp:  { type: 'disabled', note: 'Parametry kampaně se generují automaticky reklamným systémem (Google Ads auto-tagging, Meta Pixel). Nic nastavovat není potřeba.' },
   },
   social: {
     label: 'Organické sociální sítě',
@@ -307,7 +546,7 @@ const RULES = {
 // ═══════════════════════════════════════════════════════════════════
 
 let curMedium   = '';
-let appLinkType = 'marketing'; // 'marketing' | 'standard'
+let appLinkType = 'marketing';
 
 // ═══════════════════════════════════════════════════════════════════
 // SANITIZACE – zlatá pravidla GA4
@@ -316,88 +555,118 @@ let appLinkType = 'marketing'; // 'marketing' | 'standard'
 function sanitize(v) {
   return v
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // diakritika
-    .replace(/\s+/g, '_')                                // mezery → _
-    .replace(/[^a-z0-9_\-.]/g, '');                     // jen povolené znaky
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_\-.]/g, '');
 }
 
 function sanitizeEl(el) {
-  const orig = el.value;
-  const sane = sanitize(orig);
-  if (sane !== orig) {
-    el.value = sane;
-    showToast('⚠ Vstup byl automaticky upraven – UTM parametry musí být malými písmeny bez diakritiky a mezer.');
-  }
+  const orig = el.value, sane = sanitize(orig);
+  if (sane !== orig) { el.value = sane; showToast('⚠ Vstup byl automaticky upraven – UTM parametry musí být malými písmeny bez diakritiky a mezer.'); }
 }
 
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'block';
+  t.textContent = msg; t.style.display = 'block';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { t.style.display = 'none'; }, 5000);
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LOCALSTORAGE – paměť partnerů (affiliate / sponsored_content / referral)
+// LOCALSTORAGE – partneři (affiliate / sponsored_content / referral)
 // ═══════════════════════════════════════════════════════════════════
 
 const lsKey = m => 'utm_sources_' + m;
 
-function getSaved(medium) {
-  try { return JSON.parse(localStorage.getItem(lsKey(medium)) || '[]'); } catch { return []; }
+function getSaved(m) {
+  try { return JSON.parse(localStorage.getItem(lsKey(m)) || '[]'); } catch { return []; }
 }
-
-function addSaved(medium, v) {
+function addSaved(m, v) {
   if (!v) return;
-  const list = getSaved(medium);
-  if (!list.includes(v)) {
-    list.push(v);
-    localStorage.setItem(lsKey(medium), JSON.stringify(list));
-    refreshChips(medium);
-    refreshDatalist(medium);
-  }
+  const l = getSaved(m);
+  if (!l.includes(v)) { l.push(v); localStorage.setItem(lsKey(m), JSON.stringify(l)); refreshChips(m); refreshDl(m); }
 }
-
-function removeSaved(medium, v) {
-  const list = getSaved(medium).filter(x => x !== v);
-  localStorage.setItem(lsKey(medium), JSON.stringify(list));
-  refreshChips(medium);
-  refreshDatalist(medium);
+function removeSaved(m, v) {
+  const l = getSaved(m).filter(x => x !== v);
+  localStorage.setItem(lsKey(m), JSON.stringify(l)); refreshChips(m); refreshDl(m);
 }
-
-function refreshDatalist(medium) {
+function refreshDl(m) {
   const dl = document.getElementById('src-dl');
-  if (dl) dl.innerHTML = getSaved(medium).map(s => `<option value="${esc(s)}">`).join('');
+  if (dl) dl.innerHTML = getSaved(m).map(s => `<option value="${esc(s)}">`).join('');
 }
-
-function refreshChips(medium) {
+function refreshChips(m) {
   const wrap = document.getElementById('chips-wrap');
   if (!wrap) return;
-  const list = getSaved(medium);
-  if (!list.length) { wrap.style.display = 'none'; return; }
+  const l = getSaved(m);
+  if (!l.length) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
-  document.getElementById('chips-list').innerHTML = list.map(s =>
+  document.getElementById('chips-list').innerHTML = l.map(s =>
     `<span class="chip" onclick="useSaved('${esc(s)}')">${esc(s)}
-       <button class="chip-del" onclick="event.stopPropagation();removeSaved('${esc(medium)}','${esc(s)}')" title="Smazat">×</button>
+       <button class="chip-del" onclick="event.stopPropagation();removeSaved('${esc(m)}','${esc(s)}')" title="Smazat">×</button>
      </span>`
   ).join('');
 }
-
 function useSaved(v) {
   const el = document.getElementById('utm-source');
   if (el) { el.value = v; updateURL(); }
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+
 function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
-    .replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function getVal(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+// Shared tooltip HTML builder
+function tipHtml(text, ex) {
+  return `<span class="tip-wrap">
+    <button class="tip-btn" type="button" aria-label="Nápověda">?</button>
+    <div class="tip-box">${esc(text)}<div class="tip-ex">${esc(ex)}</div></div>
+  </span>`;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// RENDER – dynamické pole podle zvoleného medium
+// RENDER SKELETON – výchozí stav před výběrem media
+// ═══════════════════════════════════════════════════════════════════
+
+function renderSkeleton() {
+  document.getElementById('dynamic').innerHTML = `
+    <div class="divider">Parametry kanálu</div>
+    <div class="field">
+      <div class="label-row">
+        <label class="field-label">utm_source</label>
+        ${tipHtml('Konkrétní platforma nebo partner v rámci kanálu.','utm_source=instagram nebo lupa_cz')}
+      </div>
+      <input type="text" disabled placeholder="Vyberte nejprve typ kanálu (utm_medium)">
+    </div>
+    <div class="field">
+      <div class="label-row">
+        <label class="field-label">utm_campaign</label>
+        ${tipHtml('Název kampaně, série nebo slug obsahu.','utm_campaign=spring_promo_2026')}
+      </div>
+      <input type="text" disabled placeholder="–">
+    </div>
+    <div class="field">
+      <div class="label-row">
+        <label class="field-label">utm_content ${skOptLabel()}</label>
+        ${tipHtml('Konkrétní prvek – CTA tlačítko, banner, formát. Slouží k rozlišení více odkazů v kampani.','utm_content=banner_sidebar nebo cta_horni')}
+      </div>
+      <input type="text" disabled placeholder="–">
+    </div>
+  `;
+  document.getElementById('output').style.display = 'none';
+}
+
+function skOptLabel() {
+  return '<span style="font-weight:400;text-transform:none;letter-spacing:0">(volitelné)</span>';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER DYNAMIC – po výběru media
 // ═══════════════════════════════════════════════════════════════════
 
 function renderDynamic(medium) {
@@ -405,52 +674,52 @@ function renderDynamic(medium) {
   const wrap   = document.getElementById('dynamic');
   const output = document.getElementById('output');
 
-  if (!medium) { wrap.innerHTML = ''; output.style.display = 'none'; return; }
+  if (!medium) { renderSkeleton(); return; }
 
-  const r   = RULES[medium];
-  let html  = `<div class="divider">${r.label}</div>`;
-  if (r.desc) html += `<p class="field-helper" style="margin-bottom:16px">${r.desc}</p>`;
+  const r = RULES[medium];
+  let html = `<div class="divider">${esc(r.label)}</div>`;
+  if (r.desc) html += `<p class="field-helper" style="margin-bottom:14px">${esc(r.desc)}</p>`;
 
-  // ── SOURCE ──────────────────────────────────────────────────────
+  // ── SOURCE ─────────────────────────────────────────────────────
   html += '<div class="field">';
-  if (r.src.type === 'fixed') {
-    html += `<label class="field-label">Source</label>
-             <input type="text" id="utm-source" value="${esc(r.src.val)}" disabled>
-             <p class="field-helper">Hodnota je pevně daná pro tento kanál</p>`;
+  const srcLabel = (r.src.type === 'memory') ? r.src.lbl : 'utm_source *';
+  html += `<div class="label-row"><label class="field-label" for="utm-source">${esc(srcLabel)}</label>
+           ${tipHtml('Konkrétní platforma nebo partner v rámci kanálu.','utm_source=instagram nebo lupa_cz')}
+           </div>`;
 
+  if (r.src.type === 'fixed') {
+    html += `<input type="text" id="utm-source" value="${esc(r.src.val)}" disabled>
+             <p class="field-helper">Hodnota je pevně daná pro tento kanál</p>`;
   } else if (r.src.type === 'select') {
-    html += `<label class="field-label" for="utm-source">Source *</label>
-             <select id="utm-source">
+    html += `<select id="utm-source">
                <option value="">— Vyberte zdroj —</option>
                ${r.src.opts.map(o => `<option value="${o}">${o}</option>`).join('')}
              </select>`;
-
   } else if (r.src.type === 'memory') {
     const saved = getSaved(medium);
-    html += `<label class="field-label" for="utm-source">${r.src.lbl || 'Source *'}</label>
-             <input type="text" id="utm-source" placeholder="${esc(r.src.ph || '')}" list="src-dl" autocomplete="off">
-             <datalist id="src-dl">${saved.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+    html += `<input type="text" id="utm-source" placeholder="${esc(r.src.ph||'')}" list="src-dl" autocomplete="off">
+             <datalist id="src-dl">${saved.map(s=>`<option value="${esc(s)}">`).join('')}</datalist>
              <p class="field-helper">Pouze malá písmena a podtržítka – napr. lupa_cz</p>
-             <div class="saved-section" id="chips-wrap" style="display:${saved.length ? 'block' : 'none'}">
+             <div class="saved-section" id="chips-wrap" style="display:${saved.length?'block':'none'}">
                <p class="saved-lbl">Uložení partneři – klikněte pro použití:</p>
                <div class="saved-list" id="chips-list"></div>
              </div>`;
   }
   html += '</div>';
 
-  // ── APPLICATION TOGGLE ──────────────────────────────────────────
+  // ── APPLICATION TOGGLE ─────────────────────────────────────────
   if (r.camp.type === 'app_toggle') {
     html += `<div class="field">
-      <label class="field-label">Typ odkazu *</label>
+      <div class="label-row"><label class="field-label">Typ odkazu *</label></div>
       <div class="toggle-group">
         <div class="toggle-opt">
           <input type="radio" id="t-mkt" name="app-t" value="marketing"
-            ${appLinkType === 'marketing' ? 'checked' : ''} onchange="setAppType('marketing')">
+            ${appLinkType==='marketing'?'checked':''} onchange="setAppType('marketing')">
           <label for="t-mkt">Marketingová zpráva</label>
         </div>
         <div class="toggle-opt">
           <input type="radio" id="t-std" name="app-t" value="standard"
-            ${appLinkType === 'standard' ? 'checked' : ''} onchange="setAppType('standard')">
+            ${appLinkType==='standard'?'checked':''} onchange="setAppType('standard')">
           <label for="t-std">Standardní odkaz</label>
         </div>
       </div>
@@ -458,168 +727,261 @@ function renderDynamic(medium) {
     </div>`;
     if (appLinkType === 'marketing') {
       html += `<div class="field">
-        <label class="field-label" for="utm-campaign">Campaign *</label>
+        <div class="label-row"><label class="field-label" for="utm-campaign">utm_campaign *</label>
+        ${tipHtml('Název kampaně nebo série. Identifikuje konkrétní akci v GA4.','utm_campaign=2026-04-02_ZPS')}</div>
         <input type="text" id="utm-campaign" placeholder="napr. 2026-04-02_ZPS">
       </div>`;
     }
 
-  // ── CPC – auto campaign ─────────────────────────────────────────
+  // ── CPC – disabled ─────────────────────────────────────────────
   } else if (r.camp.type === 'disabled') {
     html += `<div class="field">
-      <label class="field-label">Campaign</label>
+      <div class="label-row"><label class="field-label">utm_campaign</label></div>
       <input type="text" id="utm-campaign" disabled placeholder="generuje se automaticky">
-      <div class="banner banner-info">ℹ ${r.camp.note}</div>
+      <div class="banner banner-info" style="margin-top:8px">ℹ ${esc(r.camp.note)}</div>
     </div>`;
 
-  // ── OPTIONAL campaign ───────────────────────────────────────────
+  // ── OPTIONAL ───────────────────────────────────────────────────
   } else if (r.camp.type === 'optional') {
     const sugg = r.camp.sugg || [];
     html += `<div class="field">
-      <label class="field-label" for="utm-campaign">Campaign <span style="font-weight:400;text-transform:none;letter-spacing:0">(volitelné)</span></label>
-      <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph || '')}"${sugg.length ? ' list="camp-dl"' : ''}>
-      ${sugg.length ? `<datalist id="camp-dl">${sugg.map(s => `<option value="${esc(s)}">`).join('')}</datalist>` : ''}
+      <div class="label-row">
+        <label class="field-label" for="utm-campaign">utm_campaign ${skOptLabel()}</label>
+        ${tipHtml('Název kampaně nebo série. Volitelné, ale doporučené pro přesnější reporty.','utm_campaign=spring_promo_2026')}
+      </div>
+      <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph||'')}"${sugg.length?' list="camp-dl"':''}>
+      ${sugg.length?`<datalist id="camp-dl">${sugg.map(s=>`<option value="${esc(s)}">`).join('')}</datalist>`:''}
     </div>`;
 
-  // ── REQUIRED campaign ───────────────────────────────────────────
+  // ── REQUIRED ───────────────────────────────────────────────────
   } else if (r.camp.type === 'required') {
     html += `<div class="field">
-      <label class="field-label" for="utm-campaign">${r.camp.lbl || 'Campaign *'}</label>
-      <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph || '')}">
+      <div class="label-row">
+        <label class="field-label" for="utm-campaign">${esc(r.camp.lbl||'utm_campaign *')}</label>
+        ${tipHtml('Slug nebo název sekce obsahu. Povinné pro vlastní platformy – identifikuje konkrétní stránku nebo sekci.','utm_campaign=faq-platby nebo magazin-tipy-portret')}
+      </div>
+      <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph||'')}">
     </div>`;
   }
 
-  // ── CONTENT (volitelné – vždy) ──────────────────────────────────
+  // ── CONTENT (always optional) ──────────────────────────────────
   html += `<div class="field">
-    <label class="field-label" for="utm-content">Content <span style="font-weight:400;text-transform:none;letter-spacing:0">(volitelné)</span></label>
+    <div class="label-row">
+      <label class="field-label" for="utm-content">utm_content ${skOptLabel()}</label>
+      ${tipHtml('Konkrétní prvek – CTA tlačítko, banner, formát. Slouží k A/B testování a rozlišení více odkazů v kampani.','utm_content=banner_sidebar nebo cta_horni')}
+    </div>
     <input type="text" id="utm-content" placeholder="napr. banner_sidebar nebo cta_horni">
-    <p class="field-helper">Konkrétní prvek – CTA, banner, formát</p>
   </div>`;
 
   wrap.innerHTML = html;
   output.style.display = 'block';
 
-  bindTextInput('utm-source');
-  bindTextInput('utm-campaign');
-  bindTextInput('utm-content');
+  bindInput('utm-source');
+  bindInput('utm-campaign');
+  bindInput('utm-content');
 
   if (r.src.type === 'memory') refreshChips(medium);
-
   updateURL();
 }
 
-function bindTextInput(id) {
+function bindInput(id) {
   const el = document.getElementById(id);
-  if (el && !el.disabled) {
-    el.addEventListener('input', () => { sanitizeEl(el); updateURL(); });
-  }
+  if (el && !el.disabled) el.addEventListener('input', () => { sanitizeEl(el); updateURL(); });
 }
 
-function setAppType(type) {
-  appLinkType = type;
-  renderDynamic(curMedium);
-}
+function setAppType(t) { appLinkType = t; renderDynamic(curMedium); }
 
 // ═══════════════════════════════════════════════════════════════════
 // BUILD URL
 // ═══════════════════════════════════════════════════════════════════
 
-function getVal(id) {
-  const el = document.getElementById(id);
-  return el ? el.value.trim() : '';
-}
-
 function buildURL() {
-  const base   = getVal('base-url');
-  if (!base)   return null;
-  const medium = getVal('medium');
-  if (!medium) return null;
-  const source = getVal('utm-source');
+  const base   = getVal('base-url'); if (!base) return null;
+  const medium = getVal('medium');   if (!medium) return null;
+  const srcEl  = document.getElementById('utm-source');
+  const source = srcEl ? srcEl.value.trim() : '';
   if (!source) return null;
 
-  const r          = RULES[medium];
-  const campEl     = document.getElementById('utm-campaign');
-  const campaign   = (campEl && !campEl.disabled) ? campEl.value.trim() : '';
+  const r       = RULES[medium];
+  const campEl  = document.getElementById('utm-campaign');
+  const campaign = (campEl && !campEl.disabled) ? campEl.value.trim() : '';
 
-  // Ověření povinných polí
-  if (r.camp.type === 'required' && !campaign)                            return null;
+  if (r.camp.type === 'required' && !campaign) return null;
   if (r.camp.type === 'app_toggle' && appLinkType === 'marketing' && !campaign) return null;
 
-  const params = { utm_source: source, utm_medium: medium };
-  if (campaign) params.utm_campaign = campaign;
+  const utmParams = { utm_source: source, utm_medium: medium };
+  if (campaign) utmParams.utm_campaign = campaign;
   const content = getVal('utm-content');
-  if (content)  params.utm_content = content;
+  if (content) utmParams.utm_content = content;
+
+  const fidl = getVal('fidl-val');
 
   try {
     const norm = /^https?:\/\//i.test(base) ? base : 'https://' + base;
-    const u    = new URL(norm);
-    // Smazat případné existující UTM params
-    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(p => u.searchParams.delete(p));
-    Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v));
-    return { url: u.toString(), params };
+    const u = new URL(norm);
+    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','fidl'].forEach(p => u.searchParams.delete(p));
+    Object.entries(utmParams).forEach(([k,v]) => u.searchParams.set(k,v));
+    if (fidl) u.searchParams.set('fidl', fidl);
+    return { url: u.toString(), utmParams, fidl };
   } catch { return null; }
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// AKTUALIZACE VÝSTUPU
+// UPDATE URL DISPLAY
 // ═══════════════════════════════════════════════════════════════════
 
 function updateURL() {
   const result = buildURL();
   const box    = document.getElementById('url-box');
-  const table  = document.getElementById('params-table');
+  const ptable = document.getElementById('ptable');
   const btn    = document.getElementById('btn-copy');
 
   if (!result) {
-    box.textContent   = 'Vyplňte povinná pole...';
-    box.className     = 'url-box ph';
-    table.style.display = 'none';
-    table.innerHTML   = '';
-    btn.disabled      = true;
-    return;
+    box.textContent = 'Vyplňte povinná pole...'; box.className = 'url-box ph';
+    ptable.style.display = 'none'; ptable.innerHTML = '';
+    btn.disabled = true; return;
   }
 
-  box.textContent   = result.url;
-  box.className     = 'url-box';
+  box.textContent = result.url; box.className = 'url-box';
 
-  table.innerHTML = Object.entries(result.params).map(([k, v]) =>
+  const rows = Object.entries(result.utmParams).map(([k,v]) =>
     `<div class="pr"><div class="pr-k">${k}</div><div class="pr-v">${esc(v)}</div></div>`
-  ).join('');
-  table.style.display = 'block';
-
+  );
+  if (result.fidl) rows.push(
+    `<div class="pr pr-fidl"><div class="pr-k">fidl</div><div class="pr-v">${esc(result.fidl)}</div></div>`
+  );
+  ptable.innerHTML = rows.join('');
+  ptable.style.display = 'block';
   btn.disabled = false;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// KOPÍROVAT
+// CHANGELOG – localStorage
+// ═══════════════════════════════════════════════════════════════════
+
+const CL_KEY  = 'utm_changelog';
+const CL_MAX  = 100;
+
+function getLog() {
+  try { return JSON.parse(localStorage.getItem(CL_KEY) || '[]'); } catch { return []; }
+}
+function saveLog(l) { localStorage.setItem(CL_KEY, JSON.stringify(l)); }
+
+function addToLog(entry) {
+  let l = getLog().filter(e => e.url !== entry.url); // deduplicate by URL
+  l.unshift(entry);                                   // LIFO – newest first
+  if (l.length > CL_MAX) l = l.slice(0, CL_MAX);
+  saveLog(l);
+  renderChangelog();
+}
+
+function deleteLogEntry(id) {
+  saveLog(getLog().filter(e => e.id !== id));
+  renderChangelog();
+}
+
+function clearLog() {
+  if (!confirm('Smazat celou historii UTM?')) return;
+  localStorage.removeItem(CL_KEY);
+  renderChangelog();
+}
+
+function renderChangelog() {
+  const section = document.getElementById('changelog');
+  const body    = document.getElementById('cl-body');
+  const countEl = document.getElementById('cl-count');
+  const full    = getLog();
+
+  if (!full.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+
+  const fMedium = document.getElementById('cl-medium')?.value || '';
+  const fSearch = (document.getElementById('cl-search')?.value || '').toLowerCase();
+
+  const filtered = full.filter(e => {
+    if (fMedium && e.medium !== fMedium) return false;
+    if (fSearch) {
+      const hay = [e.source, e.campaign, e.content, e.note, e.fidl].join(' ').toLowerCase();
+      if (!hay.includes(fSearch)) return false;
+    }
+    return true;
+  });
+
+  countEl.textContent = `(${full.length})`;
+
+  if (!filtered.length) {
+    body.innerHTML = '<div class="cl-empty">Žádné záznamy neodpovídají filtru.</div>';
+    return;
+  }
+
+  body.innerHTML = filtered.map(e => {
+    const tags = [e.medium, e.source, e.campaign, e.content].filter(Boolean)
+      .map(t => `<span class="cl-tag">${esc(t)}</span>`).join('');
+    const fidlTag = e.fidl ? `<span class="cl-tag t-fidl">fidl: ${esc(e.fidl)}</span>` : '';
+    return `<div class="cl-entry">
+      <div class="cl-date">${esc(e.date)}<br><span style="color:#9ca3af">${esc(e.time||'')}</span></div>
+      <div class="cl-main">
+        <div class="cl-tags">${tags}${fidlTag}</div>
+        ${e.note ? `<div class="cl-note">&#128203; ${esc(e.note)}</div>` : ''}
+        <div class="cl-url" title="${esc(e.url)}">${esc(e.url)}</div>
+      </div>
+      <div class="cl-actions">
+        <button class="cl-copy-btn" onclick="clCopy('${esc(e.url)}',this)">Kopírovat</button>
+        <button class="cl-del-btn" onclick="deleteLogEntry(${e.id})" title="Smazat">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function clCopy(url, btn) {
+  const copy = () => {
+    const orig = btn.textContent; btn.textContent = '✅';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  };
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(url).then(copy).catch(() => fbCopy(url, copy));
+  else fbCopy(url, copy);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// COPY
 // ═══════════════════════════════════════════════════════════════════
 
 let msgTimer;
-
 document.getElementById('btn-copy').addEventListener('click', () => {
-  const result = buildURL();
-  if (!result) return;
+  const result = buildURL(); if (!result) return;
 
-  // Uložit partnera do localStorage (pro medium s free-text source)
+  // Save partner (memory mediums)
   const medium = getVal('medium');
-  if (RULES[medium]?.src.type === 'memory') {
-    addSaved(medium, result.params.utm_source);
-  }
+  if (RULES[medium]?.src.type === 'memory') addSaved(medium, result.utmParams.utm_source);
 
-  function feedback() {
-    const msg = document.getElementById('copy-msg');
-    msg.textContent = '✅ Zkopírováno!';
+  // Changelog entry
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  addToLog({
+    id:       now.getTime(),
+    date:     `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`,
+    time:     `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+    url:      result.url,
+    medium:   medium,
+    source:   result.utmParams.utm_source  || '',
+    campaign: result.utmParams.utm_campaign|| '',
+    content:  result.utmParams.utm_content || '',
+    fidl:     result.fidl || '',
+    note:     getVal('utm-note'),
+  });
+
+  const feedback = () => {
+    const m = document.getElementById('copy-msg');
+    m.textContent = '✅ Zkopírováno a uloženo do historie!';
     clearTimeout(msgTimer);
-    msgTimer = setTimeout(() => { msg.textContent = ''; }, 2500);
-  }
+    msgTimer = setTimeout(() => { m.textContent = ''; }, 3000);
+  };
 
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(result.url).then(feedback).catch(() => fallback(result.url, feedback));
-  } else {
-    fallback(result.url, feedback);
-  }
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(result.url).then(feedback).catch(() => fbCopy(result.url, feedback));
+  else fbCopy(result.url, feedback);
 });
 
-function fallback(text, cb) {
+function fbCopy(text, cb) {
   const ta = document.createElement('textarea');
   ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
   document.body.appendChild(ta); ta.focus(); ta.select();
@@ -632,10 +994,20 @@ function fallback(text, cb) {
 // ═══════════════════════════════════════════════════════════════════
 
 document.getElementById('base-url').addEventListener('input', updateURL);
+document.getElementById('fidl-val').addEventListener('input', function() { sanitizeEl(this); updateURL(); });
+
 document.getElementById('medium').addEventListener('change', e => {
-  appLinkType = 'marketing'; // reset při změně kanálu
+  appLinkType = 'marketing';
   renderDynamic(e.target.value);
 });
+
+document.getElementById('btn-cl-clear').addEventListener('click', clearLog);
+document.getElementById('cl-medium').addEventListener('change', renderChangelog);
+document.getElementById('cl-search').addEventListener('input', renderChangelog);
+
+// Startup
+renderSkeleton();
+renderChangelog();
 </script>
 </body>
 </html>
