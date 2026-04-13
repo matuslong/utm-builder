@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTM Builder · Zoner Studio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:        #2c7a3a;
+      --green-dark:   #1e5728;
+      --green-bg:     #f0f9f1;
+      --green-border: #a8d5b0;
+      --text:         #1a1a1a;
+      --muted:        #6b7280;
+      --border:       #e2e8f0;
+      --bg:           #f8fafc;
+      --card:         #ffffff;
+      --info-bg:      #eff6ff;
+      --info-border:  #bfdbfe;
+      --info-text:    #1d4ed8;
+      --warn-bg:      #fffbeb;
+      --warn-border:  #fcd34d;
+      --warn-text:    #92400e;
+      --error:        #dc2626;
+      --r:            10px;
+      --rs:            6px;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / .10), 0 1px 2px -1px rgb(0 0 0 / .10);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 32px 16px 64px;
+    }
+
+    .wrap { max-width: 620px; margin: 0 auto; }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 28px; }
+    .header h1 { font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: -.3px; }
+    .header p  { color: var(--muted); font-size: 13px; margin-top: 3px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 14px;
+    }
+
+    /* ── Field ── */
+    .field + .field { margin-top: 18px; }
+    .field-label {
+      display: block; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .6px;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .field-helper { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+    /* ── Inputs ── */
+    input[type="text"], select {
+      display: block; width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--rs);
+      font-size: 14px; font-family: inherit; color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+      padding-right: 36px; cursor: pointer;
+    }
+    input:focus, select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(44,122,58,.15);
+    }
+    input:disabled, select:disabled {
+      background: #f8fafc; color: var(--muted); cursor: not-allowed;
+      border-color: var(--border);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 22px 0 14px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Toggle ── */
+    .toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .toggle-opt { flex: 1; min-width: 150px; }
+    .toggle-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .toggle-opt label {
+      display: flex; align-items: center; justify-content: center;
+      padding: 9px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--rs);
+      cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted);
+      background: #fff; transition: all .15s; text-align: center;
+    }
+    .toggle-opt input[type="radio"]:checked + label {
+      border-color: var(--green); background: var(--green-bg);
+      color: var(--green); font-weight: 700;
+    }
+    .toggle-opt label:hover { border-color: var(--green); }
+
+    /* ── Banners ── */
+    .banner { padding: 10px 14px; border-radius: var(--rs); font-size: 13px; margin-top: 8px; line-height: 1.5; }
+    .banner-info { background: var(--info-bg); border: 1px solid var(--info-border); color: var(--info-text); }
+    .banner-warn { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-text); }
+
+    /* ── Saved chips ── */
+    .saved-section { margin-top: 8px; }
+    .saved-lbl { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .saved-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 2px;
+      background: var(--green-bg); border: 1px solid var(--green-border);
+      border-radius: 20px; padding: 3px 6px 3px 10px;
+      font-size: 12px; color: var(--green); cursor: pointer;
+      transition: background .1s;
+    }
+    .chip:hover { background: #d4eeda; }
+    .chip-del {
+      background: none; border: none; color: #9ca3af;
+      font-size: 15px; line-height: 1; cursor: pointer;
+      padding: 0 3px; border-radius: 50%;
+      transition: color .1s, background .1s;
+    }
+    .chip-del:hover { color: var(--error); background: rgba(220,38,38,.1); }
+
+    /* ── Output card ── */
+    .out-card {
+      background: var(--green-bg);
+      border: 1.5px solid var(--green-border);
+      border-radius: var(--r);
+      padding: 20px 24px;
+      margin-bottom: 14px;
+    }
+    .out-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--green); margin-bottom: 10px; }
+    .url-box {
+      background: #fff; border: 1.5px solid var(--green-border);
+      border-radius: var(--rs); padding: 12px 14px;
+      font-family: 'Courier New','SF Mono','Consolas',monospace;
+      font-size: 12.5px; word-break: break-all;
+      color: var(--text); min-height: 46px; line-height: 1.6;
+    }
+    .url-box.ph { color: var(--muted); font-family: inherit; font-size: 14px; font-style: italic; }
+
+    /* ── Params table ── */
+    .params-table {
+      margin-top: 12px;
+      border: 1px solid var(--green-border);
+      border-radius: var(--rs); overflow: hidden; background: #fff;
+    }
+    .pr { display: flex; border-bottom: 1px solid #e8f5ea; font-size: 13px; }
+    .pr:last-child { border-bottom: none; }
+    .pr-k {
+      width: 152px; flex-shrink: 0; padding: 7px 12px;
+      font-family: 'Courier New',monospace; font-size: 12px; font-weight: 600;
+      color: var(--green); background: #f7fdf8; border-right: 1px solid #e8f5ea;
+    }
+    .pr-v { padding: 7px 12px; font-family: 'Courier New',monospace; font-size: 12px; word-break: break-all; }
+
+    /* ── Copy button ── */
+    .btn-copy {
+      display: block; width: 100%; margin-top: 14px;
+      padding: 11px 20px; background: var(--green); color: #fff;
+      border: none; border-radius: var(--rs);
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background .15s, transform .1s;
+    }
+    .btn-copy:hover:not(:disabled) { background: var(--green-dark); }
+    .btn-copy:active:not(:disabled) { transform: scale(.98); }
+    .btn-copy:disabled { background: #d1d5db; cursor: not-allowed; }
+    .copy-msg { text-align: center; font-size: 13px; font-weight: 600; color: var(--green); min-height: 22px; margin-top: 8px; }
+
+    /* ── Toast ── */
+    .toast {
+      background: var(--warn-bg); border: 1px solid var(--warn-border);
+      border-radius: var(--rs); padding: 10px 16px;
+      font-size: 13px; color: var(--warn-text); margin-bottom: 14px;
+    }
+
+    footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 24px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>UTM Builder</h1>
+    <p>Zoner Studio &middot; Marketingový tým</p>
+  </div>
+
+  <!-- Sanitize toast -->
+  <div class="toast" id="toast" style="display:none"></div>
+
+  <!-- Form card -->
+  <div class="card">
+    <div class="field">
+      <label class="field-label" for="base-url">URL webu *</label>
+      <input type="text" id="base-url" placeholder="https://www.zoner.cz/produkty/...">
+      <p class="field-helper">Adresa produktového webu – nikdy ne interní stránky</p>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="medium">Medium *</label>
+      <select id="medium">
+        <option value="">— Vyberte typ kanálu —</option>
+        <option value="application">Aplikace Zoner Studio</option>
+        <option value="cpc">Placená reklama (CPC)</option>
+        <option value="social">Organické sociální sítě</option>
+        <option value="affiliate">Affiliate / Ambasadoři</option>
+        <option value="sponsored_content">Placené zmínky</option>
+        <option value="referral">Organické PR / Externé zmínky</option>
+        <option value="owned_media">Vlastní platformy (Magazíny, Nápověda)</option>
+      </select>
+    </div>
+
+    <!-- Dynamicky vykreslená pole -->
+    <div id="dynamic"></div>
+  </div>
+
+  <!-- Output card -->
+  <div class="out-card" id="output" style="display:none">
+    <div class="out-title">Vygenerovaná URL</div>
+    <div class="url-box ph" id="url-box">Vyplňte povinná pole...</div>
+    <div class="params-table" id="params-table" style="display:none"></div>
+    <button class="btn-copy" id="btn-copy" disabled>&#128203; Kopírovat URL</button>
+    <div class="copy-msg" id="copy-msg"></div>
+  </div>
+
+  <footer>Pravidla dle UTM dokumentace Zoner Studio &middot; 2026</footer>
+
+</div>
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════════════════
+// DATA – pravidla z dokumentace (upravuj zde při změnách pravidel)
+// ═══════════════════════════════════════════════════════════════════
+
+const RULES = {
+  application: {
+    label: 'Aplikace Zoner Studio',
+    desc:  'Odkaz z aplikace Zoner Studio na produktový web',
+    src:   { type: 'fixed', val: 'ZPS' },
+    camp:  { type: 'app_toggle' },
+  },
+  cpc: {
+    label: 'Placená reklama (CPC)',
+    desc:  'Google Ads, Meta Ads, Sklik, Microsoft Ads',
+    src:   { type: 'select', opts: ['google','facebook','instagram','sklik','bing'] },
+    camp:  {
+      type: 'disabled',
+      note: 'Parametry kampaně se generují automaticky reklamným systémem (Google Ads auto-tagging, Meta Pixel). Nic nastavovat není potřeba.',
+    },
+  },
+  social: {
+    label: 'Organické sociální sítě',
+    desc:  'Příspěvky a bio-odkazy bez placené reklamy',
+    src:   { type: 'select', opts: ['facebook','instagram','youtube','linkedin','tiktok','x'] },
+    camp:  { type: 'optional', ph: 'napr. spring_promo_2026' },
+  },
+  affiliate: {
+    label: 'Affiliate / Ambasadoři',
+    desc:  'Partnerské weby a ambasadoři s affiliate odkazem',
+    src:   { type: 'memory', ph: 'jan_novak nebo fotografujeme_cz', lbl: 'Partner / Ambasador *' },
+    camp:  { type: 'optional', ph: 'napr. black_friday_2026', sugg: ['black_friday_2026'] },
+  },
+  sponsored_content: {
+    label: 'Placené zmínky',
+    desc:  'Sponzorované články a placená media coverage',
+    src:   { type: 'memory', ph: 'lupa_cz nebo fotografovani_cz', lbl: 'Web / Médium *' },
+    camp:  { type: 'optional', ph: 'napr. black_friday' },
+  },
+  referral: {
+    label: 'Organické PR / Externé zmínky',
+    desc:  'Organické zmínky a recenze bez platby',
+    src:   { type: 'memory', ph: 'lupa_cz', lbl: 'Web / Zdroj *' },
+    camp:  { type: 'optional', ph: 'napr. recenze_2026' },
+  },
+  owned_media: {
+    label: 'Vlastní platformy',
+    desc:  'Magazíny a Nápověda Zoner Studio',
+    src:   { type: 'select', opts: ['magaziny','napoveda'] },
+    camp:  { type: 'required', ph: 'slug nebo název sekce (napr. faq-platby)', lbl: 'Slug / Sekce *' },
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// STAV
+// ═══════════════════════════════════════════════════════════════════
+
+let curMedium   = '';
+let appLinkType = 'marketing'; // 'marketing' | 'standard'
+
+// ═══════════════════════════════════════════════════════════════════
+// SANITIZACE – zlatá pravidla GA4
+// ═══════════════════════════════════════════════════════════════════
+
+function sanitize(v) {
+  return v
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // diakritika
+    .replace(/\s+/g, '_')                                // mezery → _
+    .replace(/[^a-z0-9_\-.]/g, '');                     // jen povolené znaky
+}
+
+function sanitizeEl(el) {
+  const orig = el.value;
+  const sane = sanitize(orig);
+  if (sane !== orig) {
+    el.value = sane;
+    showToast('⚠ Vstup byl automaticky upraven – UTM parametry musí být malými písmeny bez diakritiky a mezer.');
+  }
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.display = 'none'; }, 5000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LOCALSTORAGE – paměť partnerů (affiliate / sponsored_content / referral)
+// ═══════════════════════════════════════════════════════════════════
+
+const lsKey = m => 'utm_sources_' + m;
+
+function getSaved(medium) {
+  try { return JSON.parse(localStorage.getItem(lsKey(medium)) || '[]'); } catch { return []; }
+}
+
+function addSaved(medium, v) {
+  if (!v) return;
+  const list = getSaved(medium);
+  if (!list.includes(v)) {
+    list.push(v);
+    localStorage.setItem(lsKey(medium), JSON.stringify(list));
+    refreshChips(medium);
+    refreshDatalist(medium);
+  }
+}
+
+function removeSaved(medium, v) {
+  const list = getSaved(medium).filter(x => x !== v);
+  localStorage.setItem(lsKey(medium), JSON.stringify(list));
+  refreshChips(medium);
+  refreshDatalist(medium);
+}
+
+function refreshDatalist(medium) {
+  const dl = document.getElementById('src-dl');
+  if (dl) dl.innerHTML = getSaved(medium).map(s => `<option value="${esc(s)}">`).join('');
+}
+
+function refreshChips(medium) {
+  const wrap = document.getElementById('chips-wrap');
+  if (!wrap) return;
+  const list = getSaved(medium);
+  if (!list.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  document.getElementById('chips-list').innerHTML = list.map(s =>
+    `<span class="chip" onclick="useSaved('${esc(s)}')">${esc(s)}
+       <button class="chip-del" onclick="event.stopPropagation();removeSaved('${esc(medium)}','${esc(s)}')" title="Smazat">×</button>
+     </span>`
+  ).join('');
+}
+
+function useSaved(v) {
+  const el = document.getElementById('utm-source');
+  if (el) { el.value = v; updateURL(); }
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER – dynamické pole podle zvoleného medium
+// ═══════════════════════════════════════════════════════════════════
+
+function renderDynamic(medium) {
+  curMedium = medium;
+  const wrap   = document.getElementById('dynamic');
+  const output = document.getElementById('output');
+
+  if (!medium) { wrap.innerHTML = ''; output.style.display = 'none'; return; }
+
+  const r   = RULES[medium];
+  let html  = `<div class="divider">${r.label}</div>`;
+  if (r.desc) html += `<p class="field-helper" style="margin-bottom:16px">${r.desc}</p>`;
+
+  // ── SOURCE ──────────────────────────────────────────────────────
+  html += '<div class="field">';
+  if (r.src.type === 'fixed') {
+    html += `<label class="field-label">Source</label>
+             <input type="text" id="utm-source" value="${esc(r.src.val)}" disabled>
+             <p class="field-helper">Hodnota je pevně daná pro tento kanál</p>`;
+
+  } else if (r.src.type === 'select') {
+    html += `<label class="field-label" for="utm-source">Source *</label>
+             <select id="utm-source">
+               <option value="">— Vyberte zdroj —</option>
+               ${r.src.opts.map(o => `<option value="${o}">${o}</option>`).join('')}
+             </select>`;
+
+  } else if (r.src.type === 'memory') {
+    const saved = getSaved(medium);
+    html += `<label class="field-label" for="utm-source">${r.src.lbl || 'Source *'}</label>
+             <input type="text" id="utm-source" placeholder="${esc(r.src.ph || '')}" list="src-dl" autocomplete="off">
+             <datalist id="src-dl">${saved.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+             <p class="field-helper">Pouze malá písmena a podtržítka – napr. lupa_cz</p>
+             <div class="saved-section" id="chips-wrap" style="display:${saved.length ? 'block' : 'none'}">
+               <p class="saved-lbl">Uložení partneři – klikněte pro použití:</p>
+               <div class="saved-list" id="chips-list"></div>
+             </div>`;
+  }
+  html += '</div>';
+
+  // ── APPLICATION TOGGLE ──────────────────────────────────────────
+  if (r.camp.type === 'app_toggle') {
+    html += `<div class="field">
+      <label class="field-label">Typ odkazu *</label>
+      <div class="toggle-group">
+        <div class="toggle-opt">
+          <input type="radio" id="t-mkt" name="app-t" value="marketing"
+            ${appLinkType === 'marketing' ? 'checked' : ''} onchange="setAppType('marketing')">
+          <label for="t-mkt">Marketingová zpráva</label>
+        </div>
+        <div class="toggle-opt">
+          <input type="radio" id="t-std" name="app-t" value="standard"
+            ${appLinkType === 'standard' ? 'checked' : ''} onchange="setAppType('standard')">
+          <label for="t-std">Standardní odkaz</label>
+        </div>
+      </div>
+      <p class="field-helper">Marketingová zpráva → campaign povinná &nbsp;|&nbsp; Standardní odkaz (nápověda atd.) → campaign se vynechá</p>
+    </div>`;
+    if (appLinkType === 'marketing') {
+      html += `<div class="field">
+        <label class="field-label" for="utm-campaign">Campaign *</label>
+        <input type="text" id="utm-campaign" placeholder="napr. 2026-04-02_ZPS">
+      </div>`;
+    }
+
+  // ── CPC – auto campaign ─────────────────────────────────────────
+  } else if (r.camp.type === 'disabled') {
+    html += `<div class="field">
+      <label class="field-label">Campaign</label>
+      <input type="text" id="utm-campaign" disabled placeholder="generuje se automaticky">
+      <div class="banner banner-info">ℹ ${r.camp.note}</div>
+    </div>`;
+
+  // ── OPTIONAL campaign ───────────────────────────────────────────
+  } else if (r.camp.type === 'optional') {
+    const sugg = r.camp.sugg || [];
+    html += `<div class="field">
+      <label class="field-label" for="utm-campaign">Campaign <span style="font-weight:400;text-transform:none;letter-spacing:0">(volitelné)</span></label>
+      <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph || '')}"${sugg.length ? ' list="camp-dl"' : ''}>
+      ${sugg.length ? `<datalist id="camp-dl">${sugg.map(s => `<option value="${esc(s)}">`).join('')}</datalist>` : ''}
+    </div>`;
+
+  // ── REQUIRED campaign ───────────────────────────────────────────
+  } else if (r.camp.type === 'required') {
+    html += `<div class="field">
+      <label class="field-label" for="utm-campaign">${r.camp.lbl || 'Campaign *'}</label>
+      <input type="text" id="utm-campaign" placeholder="${esc(r.camp.ph || '')}">
+    </div>`;
+  }
+
+  // ── CONTENT (volitelné – vždy) ──────────────────────────────────
+  html += `<div class="field">
+    <label class="field-label" for="utm-content">Content <span style="font-weight:400;text-transform:none;letter-spacing:0">(volitelné)</span></label>
+    <input type="text" id="utm-content" placeholder="napr. banner_sidebar nebo cta_horni">
+    <p class="field-helper">Konkrétní prvek – CTA, banner, formát</p>
+  </div>`;
+
+  wrap.innerHTML = html;
+  output.style.display = 'block';
+
+  bindTextInput('utm-source');
+  bindTextInput('utm-campaign');
+  bindTextInput('utm-content');
+
+  if (r.src.type === 'memory') refreshChips(medium);
+
+  updateURL();
+}
+
+function bindTextInput(id) {
+  const el = document.getElementById(id);
+  if (el && !el.disabled) {
+    el.addEventListener('input', () => { sanitizeEl(el); updateURL(); });
+  }
+}
+
+function setAppType(type) {
+  appLinkType = type;
+  renderDynamic(curMedium);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BUILD URL
+// ═══════════════════════════════════════════════════════════════════
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function buildURL() {
+  const base   = getVal('base-url');
+  if (!base)   return null;
+  const medium = getVal('medium');
+  if (!medium) return null;
+  const source = getVal('utm-source');
+  if (!source) return null;
+
+  const r          = RULES[medium];
+  const campEl     = document.getElementById('utm-campaign');
+  const campaign   = (campEl && !campEl.disabled) ? campEl.value.trim() : '';
+
+  // Ověření povinných polí
+  if (r.camp.type === 'required' && !campaign)                            return null;
+  if (r.camp.type === 'app_toggle' && appLinkType === 'marketing' && !campaign) return null;
+
+  const params = { utm_source: source, utm_medium: medium };
+  if (campaign) params.utm_campaign = campaign;
+  const content = getVal('utm-content');
+  if (content)  params.utm_content = content;
+
+  try {
+    const norm = /^https?:\/\//i.test(base) ? base : 'https://' + base;
+    const u    = new URL(norm);
+    // Smazat případné existující UTM params
+    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(p => u.searchParams.delete(p));
+    Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v));
+    return { url: u.toString(), params };
+  } catch { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// AKTUALIZACE VÝSTUPU
+// ═══════════════════════════════════════════════════════════════════
+
+function updateURL() {
+  const result = buildURL();
+  const box    = document.getElementById('url-box');
+  const table  = document.getElementById('params-table');
+  const btn    = document.getElementById('btn-copy');
+
+  if (!result) {
+    box.textContent   = 'Vyplňte povinná pole...';
+    box.className     = 'url-box ph';
+    table.style.display = 'none';
+    table.innerHTML   = '';
+    btn.disabled      = true;
+    return;
+  }
+
+  box.textContent   = result.url;
+  box.className     = 'url-box';
+
+  table.innerHTML = Object.entries(result.params).map(([k, v]) =>
+    `<div class="pr"><div class="pr-k">${k}</div><div class="pr-v">${esc(v)}</div></div>`
+  ).join('');
+  table.style.display = 'block';
+
+  btn.disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// KOPÍROVAT
+// ═══════════════════════════════════════════════════════════════════
+
+let msgTimer;
+
+document.getElementById('btn-copy').addEventListener('click', () => {
+  const result = buildURL();
+  if (!result) return;
+
+  // Uložit partnera do localStorage (pro medium s free-text source)
+  const medium = getVal('medium');
+  if (RULES[medium]?.src.type === 'memory') {
+    addSaved(medium, result.params.utm_source);
+  }
+
+  function feedback() {
+    const msg = document.getElementById('copy-msg');
+    msg.textContent = '✅ Zkopírováno!';
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(() => { msg.textContent = ''; }, 2500);
+  }
+
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(result.url).then(feedback).catch(() => fallback(result.url, feedback));
+  } else {
+    fallback(result.url, feedback);
+  }
+});
+
+function fallback(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); cb(); } catch {}
+  document.body.removeChild(ta);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INICIALIZACE
+// ═══════════════════════════════════════════════════════════════════
+
+document.getElementById('base-url').addEventListener('input', updateURL);
+document.getElementById('medium').addEventListener('change', e => {
+  appLinkType = 'marketing'; // reset při změně kanálu
+  renderDynamic(e.target.value);
+});
+</script>
+</body>
+</html>
