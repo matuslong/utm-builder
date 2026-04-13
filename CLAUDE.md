@@ -12,13 +12,13 @@ Celá logika žije v **jednom souboru: `index.html`** (inline HTML + CSS + JS).
 
 | Sekce (komentář) | Co obsahuje |
 |---|---|
-| `DATA` | Objekt `RULES` – pravidla pro každý medium |
+| `DATA` | Objekty `RULES` a `TIPS` – pravidla a nápovědy pro každý medium |
 | `STAV` | Proměnné `curMedium`, `appLinkType` |
 | `SANITIZACE` | Funkce `sanitize()`, `sanitizeEl()`, `showToast()` |
 | `LOCALSTORAGE` | Paměť partnerů pro affiliate/sponsored_content/referral |
 | `RENDER` | Funkce `renderDynamic()` – kreslí pole podle medium |
 | `BUILD URL` | Funkce `buildURL()` – sestavuje URL |
-| `AKTUALIZACE` | Funkce `updateURL()` – aktualizuje výstup |
+| `AKTUALIZACE` | Funkce `updateURL()` – aktualizuje výstup + zobrazí CMS info box |
 | `KOPÍROVAT` | Event listener na tlačítku Kopírovat |
 
 ---
@@ -54,8 +54,9 @@ Jsou zakódována v objektu `RULES` v `index.html`. Zdrojová dokumentace: `UTM 
 
 1. Přidat záznam do objektu `RULES` v `index.html`
 2. Přidat `<option>` do `<select id="medium">`
-3. V `renderDynamic()` funguje automaticky přes `RULES` objekt – pokud source type je `fixed`, `select` nebo `memory` a campaign type je `disabled`, `optional`, `required` nebo `app_toggle`
-4. Otestovat: vybrat medium, zkontrolovat vygenerovanou URL
+3. Přidat záznamy do `TIPS.src[medium]` a `TIPS.camp[medium]` (text + ex pro tooltip)
+4. V `renderDynamic()` funguje automaticky přes `RULES` objekt – pokud source type je `fixed`, `select` nebo `memory` a campaign type je `disabled`, `optional`, `required` nebo `app_toggle`
+5. Otestovat: vybrat medium, zkontrolovat vygenerovanou URL a tooltip příklady
 
 ---
 
@@ -91,4 +92,9 @@ Probíhá live při každém `oninput` eventu + zobrazí toast upozornění.
 6. affiliate – nový partner          → uloží se, navržen při příštím otevření
 7. Sanitizace "Zoner Studio"         → auto-oprava na "zoner_studio" + toast
 8. Prázdná URL                       → tlačítko Kopírovat je disabled
+9. social – source tooltip           → příklad "utm_source=instagram nebo linkedin"
+10. owned_media – campaign tooltip   → příklad "utm_campaign=faq-platby nebo magazin-tipy-portret"
+11. Platná URL → CMS info box viditelný; smazání URL → info box zmizne
+12. FIDL placeholder                 → "napr. 2026-04-cpc-en-meta-rvw-sk"
+13. Changelog na mobile (<520px)     → URL se nepřetéká, layout je 2-řádkový
 ```
