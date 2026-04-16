@@ -534,7 +534,6 @@
        target="_blank" rel="noopener">Dokumentace</a>
   </footer>
 
-<iframe name="sheets-sink" style="display:none" aria-hidden="true"></iframe>
 </div>
 <script>
 'use strict';
@@ -1049,10 +1048,7 @@ function sendToSheets(entry) {
     fidl:     entry.fidl     || '',
     note:     entry.note     || '',
   });
-  const s = document.createElement('script');
-  s.src = SHEETS_URL + '?' + p;
-  document.head.appendChild(s);
-  setTimeout(() => { if (s.parentNode) s.parentNode.removeChild(s); }, 3000);
+  fetch(SHEETS_URL + '?' + p, { mode: 'no-cors' }).catch(() => {});
 }
 
 function clCopy(url, btn) {
