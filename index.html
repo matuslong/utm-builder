@@ -430,13 +430,13 @@
       </div>
       <select id="medium">
         <option value="">— Vyberte typ kanálu —</option>
-        <option value="application">Aplikace Zoner Studio</option>
-        <option value="cpc">Placená reklama (CPC)</option>
-        <option value="social">Organické sociální sítě</option>
-        <option value="affiliate">Affiliate / Ambasadoři</option>
-        <option value="sponsored_content">Placené zmínky</option>
-        <option value="referral">Organické PR / Externé zmínky</option>
-        <option value="owned_media">Vlastní platformy (Magazíny, Nápověda)</option>
+        <option value="application">Aplikace Zoner Studio (application)</option>
+        <option value="cpc">Placená reklama (cpc)</option>
+        <option value="social">Organické sociální sítě (social)</option>
+        <option value="affiliate">Affiliate / Ambasadoři (affiliate)</option>
+        <option value="sponsored_content">Placené zmínky (sponsored_content)</option>
+        <option value="referral">Organické PR / Externé zmínky (referral)</option>
+        <option value="owned_media">Vlastní platformy (owned_media)</option>
       </select>
     </div>
 
@@ -505,7 +505,11 @@
     <div class="cl-head">
       <div class="cl-title-row">
         <span class="cl-title">Historie UTM <span class="cl-count" id="cl-count"></span></span>
-        <button class="btn-cl-clear" id="btn-cl-clear">Smazat vše</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <a href="https://docs.google.com/spreadsheets/d/11g0P-9ExTMSRMJLe_U3M9J4gy22T7VOsvZhZ_hK9sho/edit?usp=sharing"
+             target="_blank" rel="noopener" class="docs-link" style="font-size:11px;padding:2px 8px">&#128202; Rozšírená história</a>
+          <button class="btn-cl-clear" id="btn-cl-clear">Smazat vše</button>
+        </div>
       </div>
       <div class="cl-filters">
         <select id="cl-medium">
@@ -530,6 +534,7 @@
        target="_blank" rel="noopener">Dokumentace</a>
   </footer>
 
+<iframe name="sheets-sink" style="display:none" aria-hidden="true"></iframe>
 </div>
 <script>
 'use strict';
@@ -582,6 +587,9 @@ const RULES = {
     camp:  { type: 'required', ph: 'slug nebo název sekce (napr. faq-platby)', lbl: 'Slug / Sekce *' },
   },
 };
+
+// ── Google Sheets sync ──────────────────────────────────────────────
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxsXfaStlJIYNHQIQ0WNeVu1Oiwv79cKsgRD7dfw9mrDthKITsMHcT7sInmy_nTlcjvQw/exec';
 
 // ═══════════════════════════════════════════════════════════════════
 // TIPS – kontextové nápovědy k polím podle zvoleného media
@@ -736,6 +744,11 @@ function skOptLabel() {
 // ═══════════════════════════════════════════════════════════════════
 
 function renderDynamic(medium) {
+  // Zachovať hodnoty pred re-rendrom
+  const prevSrc  = getVal('utm-source');
+  const prevCamp = getVal('utm-campaign');
+  const prevCont = getVal('utm-content');
+
   curMedium = medium;
   const wrap   = document.getElementById('dynamic');
   const output = document.getElementById('output');
@@ -845,6 +858,20 @@ function renderDynamic(medium) {
 
   wrap.innerHTML = html;
   output.style.display = 'block';
+
+  // Obnoviť hodnoty po re-rendri
+  const srcEl = document.getElementById('utm-source');
+  if (srcEl && !srcEl.disabled && prevSrc) {
+    if (srcEl.tagName === 'SELECT') {
+      if ([...srcEl.options].some(o => o.value === prevSrc)) srcEl.value = prevSrc;
+    } else {
+      srcEl.value = prevSrc;
+    }
+  }
+  const campEl = document.getElementById('utm-campaign');
+  if (campEl && !campEl.disabled && prevCamp) campEl.value = prevCamp;
+  const contEl = document.getElementById('utm-content');
+  if (contEl && prevCont) contEl.value = prevCont;
 
   bindInput('utm-source');
   bindInput('utm-campaign');
@@ -1009,6 +1036,25 @@ function renderChangelog() {
   }).join('');
 }
 
+function sendToSheets(entry) {
+  if (!SHEETS_URL) return;
+  const p = new URLSearchParams({
+    date:     entry.date     || '',
+    time:     entry.time     || '',
+    url:      entry.url      || '',
+    source:   entry.source   || '',
+    medium:   entry.medium   || '',
+    campaign: entry.campaign || '',
+    content:  entry.content  || '',
+    fidl:     entry.fidl     || '',
+    note:     entry.note     || '',
+  });
+  const s = document.createElement('script');
+  s.src = SHEETS_URL + '?' + p;
+  document.head.appendChild(s);
+  setTimeout(() => { if (s.parentNode) s.parentNode.removeChild(s); }, 3000);
+}
+
 function clCopy(url, btn) {
   const copy = () => {
     const orig = btn.textContent; btn.textContent = '✅';
@@ -1033,7 +1079,7 @@ document.getElementById('btn-copy').addEventListener('click', () => {
   // Changelog entry
   const now = new Date();
   const pad = n => String(n).padStart(2,'0');
-  addToLog({
+  const entry = {
     id:       now.getTime(),
     date:     `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`,
     time:     `${pad(now.getHours())}:${pad(now.getMinutes())}`,
@@ -1044,7 +1090,9 @@ document.getElementById('btn-copy').addEventListener('click', () => {
     content:  result.utmParams.utm_content || '',
     fidl:     result.fidl || '',
     note:     getVal('utm-note'),
-  });
+  };
+  addToLog(entry);
+  sendToSheets(entry);
 
   const feedback = () => {
     const m = document.getElementById('copy-msg');
