@@ -647,22 +647,45 @@ function showToast(msg) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LOCALSTORAGE – partneři (affiliate / sponsored_content / referral)
+// STAV A SHEETS API – cross-device úložisko
 // ═══════════════════════════════════════════════════════════════════
 
-const lsKey = m => 'utm_sources_' + m;
+const state = {
+  loaded:  false,
+  history: [],
+  sources: { affiliate: [], sponsored_content: [], referral: [] },
+};
 
-function getSaved(m) {
-  try { return JSON.parse(localStorage.getItem(lsKey(m)) || '[]'); } catch { return []; }
+function sheetsApi(params) {
+  if (!SHEETS_URL) return Promise.resolve(null);
+  return fetch(SHEETS_URL + '?' + new URLSearchParams(params))
+    .then(r => r.json()).catch(() => null);
 }
+
+async function loadState() {
+  renderChangelog(); // loading state
+  const data = await sheetsApi({ action: 'read' });
+  state.loaded = true;
+  if (data) {
+    state.history = (data.history || []).reverse(); // newest first
+    state.sources = data.sources || { affiliate: [], sponsored_content: [], referral: [] };
+  }
+  renderChangelog();
+  if (curMedium) { refreshDl(curMedium); refreshChips(curMedium); }
+}
+
+function getSaved(m) { return state.sources[m] || []; }
+
 function addSaved(m, v) {
-  if (!v) return;
-  const l = getSaved(m);
-  if (!l.includes(v)) { l.push(v); localStorage.setItem(lsKey(m), JSON.stringify(l)); refreshChips(m); refreshDl(m); }
+  if (!v || getSaved(m).includes(v)) return;
+  state.sources[m] = [...(state.sources[m] || []), v];
+  refreshChips(m); refreshDl(m);
+  sheetsApi({ action: 'save_source', medium: m, value: v });
 }
 function removeSaved(m, v) {
-  const l = getSaved(m).filter(x => x !== v);
-  localStorage.setItem(lsKey(m), JSON.stringify(l)); refreshChips(m); refreshDl(m);
+  state.sources[m] = (state.sources[m] || []).filter(x => x !== v);
+  refreshChips(m); refreshDl(m);
+  sheetsApi({ action: 'delete_source', medium: m, value: v });
 }
 function refreshDl(m) {
   const dl = document.getElementById('src-dl');
@@ -958,42 +981,41 @@ function updateURL() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// CHANGELOG – localStorage
+// CHANGELOG – Sheets ako primárne úložisko
 // ═══════════════════════════════════════════════════════════════════
 
-const CL_KEY  = 'utm_changelog';
-const CL_MAX  = 100;
-
-function getLog() {
-  try { return JSON.parse(localStorage.getItem(CL_KEY) || '[]'); } catch { return []; }
-}
-function saveLog(l) { localStorage.setItem(CL_KEY, JSON.stringify(l)); }
-
 function addToLog(entry) {
-  let l = getLog().filter(e => e.url !== entry.url); // deduplicate by URL
-  l.unshift(entry);                                   // LIFO – newest first
-  if (l.length > CL_MAX) l = l.slice(0, CL_MAX);
-  saveLog(l);
+  state.history = [entry, ...state.history.filter(e => e.url !== entry.url)];
   renderChangelog();
+  sheetsApi({ action: 'write_history', ...entry });
 }
 
 function deleteLogEntry(id) {
-  saveLog(getLog().filter(e => e.id !== id));
+  state.history = state.history.filter(e => String(e.id) !== String(id));
   renderChangelog();
+  sheetsApi({ action: 'delete_history', id });
 }
 
 function clearLog() {
   if (!confirm('Smazat celou historii UTM?')) return;
-  localStorage.removeItem(CL_KEY);
+  state.history = [];
   renderChangelog();
+  sheetsApi({ action: 'clear_history' });
 }
 
 function renderChangelog() {
   const section = document.getElementById('changelog');
   const body    = document.getElementById('cl-body');
   const countEl = document.getElementById('cl-count');
-  const full    = getLog();
 
+  if (!state.loaded) {
+    section.style.display = 'block';
+    body.innerHTML = '<div class="cl-empty">Načítavam históriu...</div>';
+    countEl.textContent = '';
+    return;
+  }
+
+  const full = state.history;
   if (!full.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
 
@@ -1035,21 +1057,6 @@ function renderChangelog() {
   }).join('');
 }
 
-function sendToSheets(entry) {
-  if (!SHEETS_URL) return;
-  const p = new URLSearchParams({
-    date:     entry.date     || '',
-    time:     entry.time     || '',
-    url:      entry.url      || '',
-    source:   entry.source   || '',
-    medium:   entry.medium   || '',
-    campaign: entry.campaign || '',
-    content:  entry.content  || '',
-    fidl:     entry.fidl     || '',
-    note:     entry.note     || '',
-  });
-  fetch(SHEETS_URL + '?' + p, { mode: 'no-cors' }).catch(() => {});
-}
 
 function clCopy(url, btn) {
   const copy = () => {
@@ -1088,7 +1095,6 @@ document.getElementById('btn-copy').addEventListener('click', () => {
     note:     getVal('utm-note'),
   };
   addToLog(entry);
-  sendToSheets(entry);
 
   const feedback = () => {
     const m = document.getElementById('copy-msg');
@@ -1127,7 +1133,7 @@ document.getElementById('cl-search').addEventListener('input', renderChangelog);
 
 // Startup
 renderSkeleton();
-renderChangelog();
+loadState();
 </script>
 </body>
 </html>
